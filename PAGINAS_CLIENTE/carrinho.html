@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Minha Sacola</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="/CSS/carrinho.css">
+</head>
+<body class="bg-light">
+
+<!-- Header -->
+ <header class="header">
+  <div class="logo">
+    <a href="/index.html"><img src="../IMG/Logo1.png" alt="Logo da Loja Nova Tendência"/></a>
+  </div>
+
+  <div class="search-box">
+    <input type="text" class="pesquisar form-control" placeholder="Pesquisar">
+  </div>
+
+  <div class="menu-toggle" id="menu-toggle">☰</div>
+
+  <div class="icons" id="icons">
+  <img src="../IMG/ajuda-chat.png" alt="Chat">
+  <div class="cart-wrapper" style="position: relative; display: inline-block;">
+    <img src="../IMG/sacola.png" id="cart-icon" alt="Carrinho">
+    <span id="cart-count" style="
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background: red;
+        color: white;
+        font-size: 12px;
+        font-weight: bold;
+        padding: 2px 6px;
+        border-radius: 50%;
+        display: none;
+    ">0</span>
+  </div>
+  <a href="/PAGINAS/login.html"><img src="../IMG/usuario.png" alt="Perfil"></a>
+</div>
+
+</header>
+
+<!-- Main -->
+<main class="container my-4">
+  <div class="row">
+    <!-- Lista de Itens -->
+    <div class="col-lg-8">
+      <h4 class="fmt-title fw-bold mb-4">SACOLA <span class="text-muted">(3 Itens)</span></h4>
+
+      <!-- Item exemplo 1 -->
+      <div class="cart-item">
+        <div class="product-info">
+          <img src="/IMG/vestidos/vestido.azul.png" alt="Vestido azul">
+          <div>
+            <div class="product-title">Vestido Longo com Fenda Lateral e Babado no Decote</div>
+            <div class="mb-2">Cor: <span class="badge rounded-circle" style="background:#6693ce;">&nbsp;&nbsp;</span></div>
+            <div class="qty-group">
+              <div>Quantidade:</div>
+              <div class="btn-group rounded-pill overflow-hidden">
+                <button class="btn btn-warning btn-sm">-</button>
+                <span class="btn btn-warning btn-sm disabled">1</span>
+                <button class="btn btn-warning btn-sm">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-end">
+          <div class="fw-bold mb-2">R$ 89,90</div>
+          <button class="btn btn-link text-danger p-0" aria-label="remover"><i class="bi bi-trash fs-4"></i></button>
+        </div>
+      </div>
+
+      <!-- Item exemplo 2 (replicar conforme necessário) -->
+      <div class="cart-item">
+        <div class="product-info">
+          <img src="/IMG/vestidos/vestido.rosa.png" alt="Vestido rosa">
+          <div>
+            <div class="product-title">Vestido Longo com Fenda Lateral e Babado no Decote</div>
+            <div class="mb-2">Cor: <span class="badge rounded-circle" style="background:#e29ad8;">&nbsp;&nbsp;</span></div>
+            <div class="qty-group">
+              <div>Quantidade:</div>
+              <div class="btn-group rounded-pill overflow-hidden">
+                <button class="btn btn-warning btn-sm">-</button>
+                <span class="btn btn-warning btn-sm disabled">1</span>
+                <button class="btn btn-warning btn-sm">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-end">
+          <div class="fw-bold mb-2">R$ 89,90</div>
+          <button class="btn btn-link text-danger p-0"><i class="bi bi-trash fs-4"></i></button>
+        </div>
+      </div>
+
+      <!-- Item exemplo 3 -->
+      <div class="cart-item">
+        <div class="product-info">
+          <img src="/IMG/vestidos/vestido.verde.png" alt="Vestido verde">
+          <div>
+            <div class="product-title">Vestido Longo com Fenda Lateral e Babado no Decote</div>
+            <div class="mb-2">Cor: <span class="badge rounded-circle" style="background:#91ce8a;">&nbsp;&nbsp;</span></div>
+            <div class="qty-group">
+              <div>Quantidade:</div>
+              <div class="btn-group rounded-pill overflow-hidden">
+                <button class="btn btn-warning btn-sm">-</button>
+                <span class="btn btn-warning btn-sm disabled">1</span>
+                <button class="btn btn-warning btn-sm">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-end">
+          <div class="fw-bold mb-2">R$ 89,90</div>
+          <button class="btn btn-link text-danger p-0"><i class="bi bi-trash fs-4"></i></button>
+        </div>
+      </div>
+
+      <!-- FAVORITOS: título alinhado com a coluna -->
+      <div class="favorites-wrap">
+        <h5 class="fw-bold mb-3">
+          SEUS PRODUTOS FAVORITOS 
+          <span class="coracao-titulo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="18" fill="#111111" viewBox="0 0 16 16">
+              <path d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+            </svg>
+          </span>
+        </h5>
+
+
+
+
+
+        <!-- scroll no mobile, grid em desktop -->
+        <div class="favorites-scroll">
+          <div class="favorites-card">
+            <div style="position:relative;">
+              <img src="/IMG/produtos/produto1.png" alt="Produto 1">
+              <span style="position:absolute; top:10px; right:10px;" class="heart"><i class="bi bi-heart-fill"></i></span>
+            </div>
+            <div style="padding:10px; text-align:center;">
+              <p class="small mb-1">Conjunto Social Branco – Cropped + Calça Alfaiataria</p>
+              <p class="fw-bold text-danger mb-0">R$ 89,90</p>
+            </div>
+          </div>
+
+          <div class="favorites-card">
+            <div style="position:relative;">
+              <img src="/IMG/produtos/produto2.png" alt="Produto 2">
+              <span style="position:absolute; top:10px; right:10px;" class="heart"><i class="bi bi-heart-fill"></i></span>
+            </div>
+            <div style="padding:10px; text-align:center;">
+              <p class="small mb-1">Conjunto Verde Menta – Colete Alfaiataria + Calça</p>
+              <p class="fw-bold text-danger mb-0">R$ 105,90</p>
+            </div>
+          </div>
+
+          <div class="favorites-card">
+            <div style="position:relative;">
+              <img src="/IMG/produtos/produto3.png" alt="Produto 3">
+              <span style="position:absolute; top:10px; right:10px;" class="heart"><i class="bi bi-heart-fill"></i></span>
+            </div>
+            <div style="padding:10px; text-align:center;">
+              <p class="small mb-1">Vestido Azul Alfaiataria</p>
+              <p class="fw-bold text-danger mb-0">R$ 105,90</p>
+            </div>
+          </div>
+
+          <div class="favorites-card">
+            <div style="position:relative;">
+              <img src="/IMG/produtos/produto4.png" alt="Produto 4">
+              <span style="position:absolute; top:10px; right:10px;" class="heart"><i class="bi bi-heart-fill"></i></span>
+            </div>
+            <div style="padding:10px; text-align:center;">
+              <p class="small mb-1">Macacão Bege Alfaiataria</p>
+              <p class="fw-bold text-danger mb-0">R$ 155,89</p>
+            </div>
+          </div>
+
+        </div> <!-- /.favorites-scroll -->
+      </div> <!-- /.favorites-wrap -->
+
+    </div> <!-- /.col-lg-8 -->
+
+    <!-- Resumo -->
+    <div class="col-lg-4">
+      <div class="resumo-compra border p-3 bg-white shadow-sm rounded">
+        <h6 class="fw-bold mb-3">RESUMO DA COMPRA</h6>
+        <div class="d-flex justify-content-between mb-1">
+          <span>Subtotal:</span> <span>R$ 269,70</span>
+        </div>
+        <div class="d-flex justify-content-between mb-1">
+          <span>Desconto:</span> <span>R$ 0,00</span>
+        </div>
+        <hr>
+        <div class="d-flex justify-content-between fw-bold text-danger">
+          <span>Total:</span> <span>R$ 269,70</span>
+        </div>
+        <a href="/PAGINAS/fretepagamento.html"><button class="btn btn-dark w-100 mt-3 fw-bold rounded">FINALIZAR (3)</button></a>
+      </div>
+    </div>
+
+  </div>
+
+
+
+    </div>
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="footer d-flex justify-content-between p-3 border-top bg-white">
+  <div class="footer-esquerdo">
+    <a href="#"><p>Sobre nós</p></a>
+    <a href="#"><p>Novidades</p></a>
+    <p>Desenvolvido por Giovanna Evellyn Santos Silva</p>
+  </div>
+  <div class="footer-direito">
+    <p>Conheça nossas redes sociais</p>
+    <div class="icons-sociais">
+      <a href="#"><img src="../IMG/instagram.png" alt="Instagram" height="28"></a>
+      <a href="#"><img src="../IMG/facebook.png" alt="Facebook" height="28"></a>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/JS/carrinho.js" defer></script>
+</body>
+</html>

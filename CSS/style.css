@@ -1,0 +1,221 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+body{
+    background-color: #EEEEEE;
+}
+/* Conteúdo principal ocupa todo o espaço disponível */
+.conteudo-principal {
+    flex: 1;
+}
+
+/* ---------------- Header ---------------- */
+.header {
+  background-color: #1F1F1F; 
+  padding: 20px;
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: bold;
+  height: 80px;
+  width: auto;
+}
+.logo img { 
+  display: flex;
+  height: 75px;
+  width: 90px;
+  margin-left: 50px;
+  cursor: pointer;
+}
+
+/* Hover da logo */
+.logo img {
+    transition: transform 0.3s ease; /* animação suave */
+}
+
+.logo img:hover {
+    transform: scale(1.05);  /* aumenta levemente a logo */
+    cursor: pointer;         /* muda o cursor para indicar clicável */
+}
+
+
+/* barra de pesquisa */
+.search-box {
+  flex: 1;
+  max-width: 800px;
+  margin: 0 20px;
+  border: none;
+  border-radius: 100px;
+  font-size: 16px;
+}
+.search-box input {
+  width: 100%;
+  padding: 10px 30px 10px 15px;
+  border: none;
+  border-radius: 5px;
+  font-size: 15px;
+  outline: none;
+}
+
+/* Ícones */
+.icons {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+  margin-right: 60px;
+}
+.icons img {
+  display: flex;
+  height: 29px;
+  margin-left: 15px;
+  cursor: pointer;
+}
+
+/* Ícones do header */
+.icons img {
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.icons img:hover {
+    transform: scale(1.2);       /* aumenta o ícone */
+    filter: brightness(1.3);     /* deixa o ícone mais claro */
+}
+
+/* Ícones das redes sociais do footer */
+.icons-sociais img {
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.icons-sociais img:hover {
+    transform: scale(1.2);       /* aumenta o ícone */
+    filter: brightness(1.3);     /* deixa o ícone mais claro */
+}
+
+
+/* botão hamburguer */
+.menu-toggle {
+  display: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .icons {
+    display: none;
+    flex-direction: column;
+    background: #1f1f1f;
+    position: absolute;
+    top: 60px;
+    right: 20px;
+    padding: 10px;
+    border-radius: 6px;
+    z-index: 9999;
+  }
+  .icons img {
+    margin: 10px 0;
+  }
+  .menu-toggle {
+    display: block;
+  }
+}
+
+
+/* ---------------- Footer ---------------- */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #e7e7e7; /* cor final */
+  color: #1F1F1F;
+  padding: 20px 40px;
+  flex-wrap: wrap;
+  width: 100%;
+  /* REMOVIDO: position: fixed; bottom: 0; left: 0; */
+}
+
+.footer-esquerdo p,
+.footer-esquerdo a {
+  display: flex;
+  margin: 5px 0;
+  color: #1F1F1F;
+  text-decoration: none;
+  font-size: 14px;
+  flex-direction: column;
+  gap: 5px;
+}
+.footer-esquerdo a:hover { text-decoration: underline; }
+
+.footer-direito { text-align: right; }
+
+.icons-sociais a { margin-left: 10px; }
+.icons-sociais img {
+  width: 30px;
+  height: 30px;
+  transition: transform 0.3s ease;
+}
+.icons-sociais img:hover { transform: scale(1.2); }
+
+
+ /*<header class="header">
+  <div class="logo">
+    <a href="/index.html"><img src="../IMG/Logo1.png" alt="Logo da Loja Nova Tendência"/></a>
+  </div>
+
+  <div class="search-box">
+    <input type="text" class="pesquisar form-control" placeholder="Pesquisar">
+  </div>
+
+  <div class="menu-toggle" id="menu-toggle">☰</div>
+
+  <div class="icons" id="icons">
+  <img src="../IMG/ajuda-chat.png" alt="Chat">
+  <div class="cart-wrapper" style="position: relative; display: inline-block;">
+    <img src="../IMG/sacola.png" id="cart-icon" alt="Carrinho">
+    <span id="cart-count" style="
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background: red;
+        color: white;
+        font-size: 12px;
+        font-weight: bold;
+        padding: 2px 6px;
+        border-radius: 50%;
+        display: none;
+    ">0</span>
+  </div>
+  <a href="/PAGINAS/login.html"><img src="../IMG/usuario.png" alt="Perfil"></a>
+</div>
+
+</header>*/
+
+
+/*<footer class="footer d-flex justify-content-between p-3 border-top bg-white">
+  <div class="footer-esquerdo">
+    <a href="#"><p>Sobre nós</p></a>
+    <a href="#"><p>Novidades</p></a>
+    <p>Desenvolvido por Giovanna Evellyn Santos Silva</p>
+  </div>
+  <div class="footer-direito">
+    <p>Conheça nossas redes sociais</p>
+    <div class="icons-sociais">
+      <a href="#"><img src="../IMG/instagram.png" alt="Instagram" height="28"></a>
+      <a href="#"><img src="../IMG/facebook.png" alt="Facebook" height="28"></a>
+    </div>
+  </div>
+</footer>*/
+
+
+
