@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Home Logista</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- CSS customizado -->
+  <link rel="stylesheet" href="../CSS/home.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header d-flex align-items-center justify-content-between px-3">
+    <div class="d-flex align-items-center">
+      <button id="toggle-btn" class="btn btn-link text-white me-3 d-md-none">
+        <i class="bi bi-list fs-3"></i>
+      </button>
+      <div class="logo">
+        <img src="../IMG/Logo1.png" alt="Logo" class="logo-img">
+      </div>
+    </div>
+
+    <!-- Barra de pesquisa -->
+    <div class="search-bar flex-grow-1 mx-3">
+      <input type="text" class="form-control" placeholder="Pesquisar" />
+    </div>
+
+    <!-- Ícones -->
+    <div class="icons d-flex align-items-center gap-3">
+      <img src="../IMG/ICONE_CHAT.png" alt="">
+    </div>
+  </header>
+
+  <!-- Sidebar -->
+  <aside id="sidebar" class="sidebar">
+    <ul class="nav flex-column">
+      <li class="nav-item">
+        <a href="#" class="nav-link active"><i class="bi bi-house-door"></i> <span>HOME</span></a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link"><i class="bi bi-box-seam"></i> <span>PRODUTOS</span></a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link"><i class="bi bi-fire"></i> <span>PROMOÇÕES</span></a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link"><i class="bi bi-bag"></i> <span>PEDIDOS</span></a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link"><i class="bi bi-bar-chart"></i> <span>RELATÓRIOS</span></a>
+      </li>
+    </ul>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main-content">
+    <div class="container-fluid py-3">
+      <div class="row g-3">
+
+        <!-- Coluna esquerda -->
+        <div class="col-md-4 d-flex flex-column gap-3">
+
+          <!-- Ações rápidas -->
+         
+            <button class="btn btn-warning fw-bold w-100 mb-2 py-3"><i class="bi bi-plus-circle me-2"></i> Novo Produto</button>
+            <button class="btn btn-danger fw-bold w-100 py-3"><i class="bi bi-fire me-2"></i> Nova Promoção</button>
+          
+
+          <!-- Pedidos pendentes -->
+          <div class=" card-status  card p-3 ">
+            <h6 class="text-danger">Pedidos Pendentes</h6>
+            <span class="circle circle-red">2</span>
+          </div>
+
+          <!-- Pedidos aguardando envio -->
+          <div class="card-status card p-3 ">
+            <h6 class="text-warning">Pedidos Aguardando Envio</h6>
+            <span class="circle circle-orange">1</span>
+          </div>
+
+          <!-- Clientes novos -->
+          <div class="card-status card p-3 ">
+            <h6>Clientes Novos</h6>
+            <span class=" fs-4 fw-bold text-warning">900</span>
+            <small class="text-success">Agosto</small>
+          </div>
+
+          <!-- Fluxo do site -->
+          <div class="card-status card p-3 ">
+            <h6 class="text-primary">Fluxo do Site</h6>
+            <span class=" circle circle-blue">+12%</span>
+            <small class=" text-muted">12% a mais que o mês anterior</small>
+          </div>
+        </div>
+
+        <!-- Coluna direita -->
+        <div class="col-md-8 d-flex flex-column gap-3">
+
+          <!-- Resumo de vendas -->
+          <div class=" card  border-0 shadow-sm p-3">
+                <div class="d-flex justify-content-around align-items-start">
+
+                    <div class="text-center">
+                    <h6 >Resumo de vendas mensal:</h6>
+                     <!-- Ícone no lugar do gráfico -->
+                    <button id="sales-btn" class="btn btn-light d-flex justify-content-center align-items-center mx-auto icon-btn">
+                        <i class="bi bi-bar-chart-fill fs-1 text-warning"></i>
+                    </button>
+                    </div>
+
+                    <div class="text-center">
+                        <h6 class="resumo-vendas">Vendas desse mês:</h6>
+                        <h5 class=" valores text-success">R$ 875,00</h5>
+                    </div>
+
+                    <div class="text-center">
+                        <h6 class="resumo-vendas">Vendas de hoje:</h6>
+                        <h5 class=" valores text-warning">R$ 87,50</h5>
+                    </div>
+
+                </div>
+            </div>
+
+
+          <!-- Promoções Ativas -->
+          <div class="card p-3">
+            <h6 class="text-danger mb-2">Promoções Ativas</h6>
+            <div id="carouselPromocoes" class="carousel slide" data-bs-ride="carousel">
+              <div class="carousel-inner">
+                <div class="carousel-item active">
+                  <a href="../HTML/promocoes.html"><img src="../IMG/banner1.png" class="d-block w-100 rounded" alt="Promoção 1"></a>
+                </div>
+                <div class="carousel-item">
+                  <a href="../HTML/promocoes.html"><img src="../IMG/banner2.png" class="d-block w-100 rounded" alt="Promoção 2"></a>
+                </div>
+                <div class="carousel-item">
+                  <a href="../HTML/promocoes.html"><img src="../IMG/banner3.png" class="d-block w-100 rounded" alt="Promoção 3"></a>
+                </div>
+              </div>
+              <button class="carousel-control-prev" type="button" data-bs-target="#carouselPromocoes" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#carouselPromocoes" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Categorias Ativas -->
+          <div class="card p-3">
+            <h6 class="text-warning mb-2">Categorias Ativas</h6>
+            <div id="carouselCategorias" class="carousel slide" data-bs-ride="carousel">
+              <div class="carousel-inner text-center">
+                <div class="carousel-item active">
+                  <div class="d-flex justify-content-around">
+                    <div><img src="../IMG/blusa.png" class="category-img rounded-circle mb-2"><p>Blusas</p></div>
+                    <div><img src="../IMG/calca.png" class="category-img rounded-circle mb-2"><p>Calças</p></div>
+                    <div><img src="../IMG/vestido.png" class="category-img rounded-circle mb-2"><p>Vestidos</p></div>
+                    <div><img src="../IMG/short.png" class="category-img rounded-circle mb-2"><p>Shorts</p></div>
+                  </div>
+                </div>
+                <div class="carousel-item">
+                  <div class="d-flex justify-content-around">
+                    <div><img src="../IMG/conjunto/conjunto.jpg" class="category-img rounded-circle mb-2"><p>Conjnto</p></div>
+                    <div><img src="../IMG/blusas/bolsa.jpg" class="category-img rounded-circle mb-2"><p>Bolsas</p></div>
+                    <div><img src="../IMG/produtos/produto1.png" class="category-img rounded-circle mb-2"><p>Acessórios</p></div>
+                    <div><img src="../IMG/blusas/casaco.jpg" class="category-img rounded-circle mb-2"><p>Casacos</p></div>
+                  </div>
+                </div>
+              </div>
+              <button class="carousel-control-prev" type="button" data-bs-target="#carouselCategorias" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#carouselCategorias" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../JS/home.js"></script>
+</body>
+</html>
