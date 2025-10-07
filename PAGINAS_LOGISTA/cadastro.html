@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cadastro</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="../CSS/style.css" />
+  </head>
+  <body>
+    
+ 
+    <header class="header">
+      <nav class="breadcrumb">
+        <a href="login.html"><img src="../IMG/voltar.png" alt="Voltar" class="image-voltar"></a>
+        <a href="/index.html">Home</a> 
+        <a href="/PAGINAS/login.html">/ Login</a> 
+        <a href="/PAGINAS/cadastro.html">/ Cadastro</a>
+      </nav>
+
+      <div class="nova-tendencia">
+        <p>Nova Tendencia</p>
+      </div>
+
+
+    </header>
+
+
+
+
+    <!--Inicio do Container Principal-------------------------------------------------->
+    <div class="container-fluid">
+      <div class="row min-vh-100">
+        <!--Inicio da Coluna Esquerda (Boas-vindas)------------------------------------>
+
+        <div class="col-lg-6 d-none d-lg-flex align-items-center justify-content-center bg-image">
+        <div class="overlay-content d-flex flex-column align-items-center text-center text-white px-25">
+            <img src="../IMG/Logo2.png" alt="Logo" class="mb-4 logo">
+            <h2 class="fw-bold">Bem-Vindo!</h2>
+            <p>Crie sua conta para iniciarmos<br>uma nova experiência</p>
+        </div>
+        </div>
+<!--Fim da Coluna Esquerda (Boas-vindas)--------------------------------------->
+
+<!--Fim da Coluna Esquerda (Boas-vindas)--------------------------------------->
+
+
+        <!--Inicio da Coluna Direita (Formulário)-------------------------------------->
+        <div class="col-lg-6 d-flex align-items-center justify-content-center px-0">
+          <div class="w-100" style="max-width: 400px">
+            <div class="text-center mb-4 d-flex flex-column align-items-center text-center px-0">
+              <img src="../IMG/Logo1.png" alt="Logo" class="mb-3 logo" />
+              <h3 class="fw-bold">Crie sua conta</h3>
+            </div>
+          
+
+            <!--Inicio do Formulário de Cadastro-------------------------------------->
+            <form action="../PHP/cadastrocliente.php" method="post" >
+              <div class="mb-3">
+                <label for="nome" class="form-label">Nome completo:</label>
+                <input type="text" class="form-control" id="nome" name="nome" required />
+              </div>
+
+              <div class="mb-3">
+                <label for="cpf" class="form-label">CPF:</label>
+                <input type="text" class="form-control" id="cpf" name="cpf" required />
+              </div>
+
+              <div class="mb-3">
+                <label for="telefone" class="form-label">Telefone:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="telefone"
+                  name="telefone"
+                  required
+                />
+              </div>
+
+              <div class="mb-3">
+                <label for="email" class="form-label">E-mail:</label>
+                <input type="email" class="form-control" id="email" name="email" required />
+              </div>
+
+              <div class="mb-3 position-relative">
+                <label for="senha" class="form-label">Senha:</label>
+                <div class="input-group">
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="senha"
+                    name="senha"
+                    required
+                  />
+                  <button
+                    class="btn btn-outline-secondary toggle-password"
+                    type="button"
+                    data-target="senha"
+                  >
+                    👁
+                  </button>
+                </div>
+              </div>
+
+              <div class="mb-3 position-relative">
+                <label for="confirmarSenha" class="form-label"
+                  >Confirmar Senha:</label
+                >
+                <div class="input-group">
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="confirmarSenha"
+                    name="confirmarSenha"
+                    required
+                  />
+                  <button
+                    class="btn btn-outline-secondary toggle-password"
+                    type="button"
+                    data-target="confirmarSenha"
+                  >
+                    👁
+                  </button>
+                </div>
+              </div>
+
+              <button type="submit" class=" btn-cadastrese btn btn-dark w-100">
+                Cadastre-se
+              </button>
+            </form  id="cadastroForm" action="javascript:void(0);">
+            <!--Fim do Formulário de Cadastro----------------------------------------->
+          </div>
+        </div>
+        <!--Fim da Coluna Direita (Formulário)---------------------------------------->
+      </div>
+    </div>
+    <!--Fim do Container Principal--------------------------------------------------->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!--Inicio do Script JS (Máscaras e Mostrar Senha)------------------------------->
+    <script>
+      // Máscara CPF
+      document.getElementById("cpf").addEventListener("input", function (e) {
+        let value = e.target.value.replace(/\D/g, "");
+        if (value.length > 11) value = value.slice(0, 11);
+        value = value.replace(/(\d{3})(\d)/, "$1.$2");
+        value = value.replace(/(\d{3})(\d)/, "$1.$2");
+        value = value.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+        e.target.value = value;
+      });
+
+      // Máscara Telefone
+      document
+        .getElementById("telefone")
+        .addEventListener("input", function (e) {
+          let value = e.target.value.replace(/\D/g, "");
+          if (value.length > 11) value = value.slice(0, 11);
+          value = value.replace(/^(\d{2})(\d)/g, "($1) $2");
+          value = value.replace(/(\d{5})(\d{4})$/, "$1-$2");
+          e.target.value = value;
+        });
+
+      // Mostrar/Ocultar senha
+      document.querySelectorAll(".toggle-password").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          const input = document.getElementById(this.dataset.target);
+          input.type = input.type === "password" ? "text" : "password";
+        });
+      });
+    </script>
+
+    <footer class="footer">
+    <div class="footer-esquerdo">
+        <a href=""><p>Novidades</p></a>
+        <a href=""><p>Sobre nós</p></a>
+        <p> Desenvolvido por Giovanna Evellyn Santos Silva</p>
+    </div>
+
+    <div class="footer-direito">
+      <p>Conheça nossas redes sociais</p>
+      <div class="icons-sociais">
+        <a href=""><img src="../IMG/instagram.png" alt="Instagram"></a>
+        <a href=""><img src="../IMG/facebook.png" alt="Facebook"></a>
+      </div>
+    </div>
+  </footer>
+  </body>
+</html>

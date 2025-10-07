@@ -26,13 +26,14 @@ try {
     }
 
     // Dados do produto
-    $nome = $_POST["nomeproduto"];
-    $quantidade = (int)$_POST["quantidade"];
-    $preco = (double)$_POST["preco"];
-    $tamanho = $_POST["tamanho"];
-    $cor = $_POST["cor"];
-    $codigo = (int)$_POST["codigo"];
-    $preco_promocional = (double)$_POST["precopromocional"];
+    $nome = $_POST["nomeproduto"] ?? "";
+    $descricao = $_POST["descricao"] ?? "";
+    $quantidade = (int)($_POST["quantidade"] ?? 0);
+    $preco = (double)($_POST["preco"] ?? 0);
+    $tamanho = $_POST["tamanho"] ?? "";
+    $cor = $_POST["cor"] ?? "";
+    $codigo = (int)($_POST["codigo"] ?? 0);
+    $preco_promocional = (double)($_POST["precopromocional"] ?? 0);
     $marcas_id = 1;
 
     // Imagens
@@ -55,11 +56,12 @@ try {
 
     // Inserir produto
     $sqlProdutos = "INSERT INTO produtos 
-        (nome, quantidade, preco, tamanho, cor, preco_promocional, marcas_id) 
-        VALUES (:nome, :quantidade, :preco, :tamanho, :cor, :preco_promocional, :marcas_id)";
+        (nome, descricao, quantidade, preco, tamanho, cor, preco_promocional, marcas_id) 
+        VALUES (:nome, :descricao, :quantidade, :preco, :tamanho, :cor, :preco_promocional, :marcas_id)";
     $stmProdutos = $pdo->prepare($sqlProdutos);
     $inserirProdutos = $stmProdutos->execute([
         ":nome" => $nome,
+        ":descricao" => $descricao,
         ":quantidade" => $quantidade,
         ":preco" => $preco,
         ":tamanho" => $tamanho,
@@ -100,7 +102,7 @@ try {
     redirecWith("../paginas_logista/cadastro_produtos_logista.html", ["sucesso" => "Produto e imagens cadastrados com sucesso."]);
 
 } catch (Exception $e) {
-    $pdo->rollBack();
+    if ($pdo->inTransaction()) $pdo->rollBack();
     redirecWith("../paginas_logista/cadastro_produtos_logista.html", ["erro_produto" => "Erro no banco de dados: " . $e->getMessage()]);
 }
 ?>
