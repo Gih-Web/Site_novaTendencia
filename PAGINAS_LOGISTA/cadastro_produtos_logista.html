@@ -93,6 +93,7 @@
         </div>
         <div class="card-body">
 
+          <!-- Formulário permanece igual -->
           <form class="row g-3" action="../PHP/cadastro_marcas.php" method="post" enctype="multipart/form-data">
             <div class="col-12 col-md-3 text-center">
               <div class="brand-thumb border rounded d-flex align-items-center justify-content-center overflow-hidden">
@@ -111,57 +112,37 @@
                 </div>
                 <div class="col-12 d-flex gap-2">
                   <button type="submit" class="btn btn-primary">Cadastrar</button>
-                  <button type="submit" class="btn btn-outline-secondary">Editar</button>
-                  <button type="submit" class="btn btn-outline-danger">Excluir</button>
                 </div>
 
+                <!-- Tabela de marcas -->
                 <div class="col-12">
-                  <label class="form-label">Marcas cadastradas</label>
-                  <div class="table-responsive">
-                    <table class="table align-middle mb-0">
-                      <thead>
-                        <tr>
-                          <th style="width: 72px;">Logo</th>
-                          <th>Nome</th>
-                          <th class="text-end">Ações</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td><div class="logo-sample rounded"></div></td>
-                          <td>TechPro</td>
-                          <td class="text-end">
-                            <button class="btn btn-sm btn-outline-secondary">Editar</button>
-                            <button class="btn btn-sm btn-outline-danger">Excluir</button>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><div class="logo-sample rounded"></div></td>
-                          <td>GigaMax</td>
-                          <td class="text-end">
-                            <button class="btn btn-sm btn-outline-secondary">Editar</button>
-                            <button class="btn btn-sm btn-outline-danger">Excluir</button>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><div class="logo-sample rounded"></div></td>
-                          <td>Mobix</td>
-                          <td class="text-end">
-                            <button class="btn btn-sm btn-outline-secondary">Editar</button>
-                            <button class="btn btn-sm btn-outline-danger">Excluir</button>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
+                    <label class="form-label">Marcas cadastradas</label>
+                    <div class="table-responsive">
+                        <table class="table align-middle mb-0" id="marcasTable">
+                            <thead>
+                                <tr>
+                                    <th style="width: 72px;">Logo</th>
+                                    <th>Nome</th>
+                                    <th class="text-end">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- JS irá preencher -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
+
 
               </div>
             </div>
           </form>
+
         </div>
       </div>
     </section>
+
+
 
     <!-- 4) Produtos -->
     <section id="produtos" class="mb-5">
@@ -398,7 +379,7 @@
     });
     document.getElementById('year').textContent = new Date().getFullYear();
   </script>
-
+  <script src="../JS/marcas.js"></script>
   <script src="../JS/produtos_logista.js"></script>
   </body>
 </html>
