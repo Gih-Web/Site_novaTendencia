@@ -4,7 +4,7 @@ function listarcategorias(nomeid){
 (async() => {
     //
     const sel  = document.querySelector(nomeid); 
-  
+   
     try {
         //criando variável que guarda os dados vindo do php, que estão no metodo listar
         const r  = await fetch("../PHP/cadastro_categorias.php?listar=1");

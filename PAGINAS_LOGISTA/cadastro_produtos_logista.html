@@ -127,7 +127,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- JS irá preencher -->
+                              <!-- JS irá preencher -->
                             </tbody>
                         </table>
                     </div>
@@ -232,9 +232,6 @@
               <label for="pMarca" class="form-label">Marca</label>
               <select name="marcaproduto" id="pMarca" class="form-select">
                 <option selected>Selecione...</option>
-                <option>TechPro</option>
-                <option>GigaMax</option>
-                <option>Mobix</option>
               </select>
             </div>
 
@@ -247,91 +244,39 @@
         </div>
       </div>
     </section>
-    <!-- Lista de Produtos -->
-<section class="mt-4" aria-labelledby="titulo-lista-produtos">
-  <div class="card shadow-sm">
-    <div class="card-header bg-white d-flex flex-wrap align-items-center justify-content-between gap-2">
-      <h5 id="titulo-lista-produtos" class="m-0">Produtos cadastrados</h5>
-      <!-- Campo de busca decorativo (sem JS) -->
-      <form class="d-inline-block" role="search" aria-label="Busca na tabela (decorativa)">
-        <input type="search" class="form-control form-control-sm" placeholder="Buscar (decorativo)" disabled>
-      </form>
-    </div>
+        <!-- Lista de Produtos -->
+    <section class="mt-4" aria-labelledby="titulo-lista-produtos">
+      <div class="card shadow-sm">
+        <div class="card-header bg-white d-flex flex-wrap align-items-center justify-content-between gap-2">
+          <h5 id="titulo-lista-produtos" class="m-0">Produtos cadastrados</h5>
+          <!-- Campo de busca decorativo (sem JS) -->
+          <form class="d-inline-block" role="search" aria-label="Busca na tabela (decorativa)">
+            <input type="search" class="form-control form-control-sm" placeholder="Buscar (decorativo)" disabled>
+          </form>
+        </div>
 
-    <div class="table-responsive">
-      <table class="table table-hover align-middle mb-0 produtos-tabela">
-        <thead class="table-light">
-          <tr>
-            <th scope="col" style="width:72px;">ID</th>
-            <th scope="col" style="width:72px;">Imagem</th>
-            <th scope="col">Nome</th>
-            <th scope="col">Marca</th>
-            <th scope="col">Categorias</th>
-            <th scope="col" class="text-end">Qtd</th>
-            <th scope="col" class="text-end">Preço</th>
-            <th scope="col" class="text-end">Promo</th>
-            <th scope="col" style="width:120px;">Código</th>
-            <th scope="col" class="text-end" style="width:160px;">Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- EXEMPLOS ESTÁTICOS (substitua pelos seus dados quando integrar) -->
-          <tr>
-            <td>105</td>
-            <td>
-              <div class="prod-thumb rounded border"></div>
-            </td>
-            <td>Fone Bluetooth X200</td>
-            <td>TechPro</td>
-            <td><span class="badge text-bg-light me-1">Acessórios</span><span class="badge text-bg-light">Celulares</span></td>
-            <td class="text-end">25</td>
-            <td class="text-end">R$ 199,90</td>
-            <td class="text-end">R$ 169,90</td>
-            <td>SKU-FTX200</td>
-            <td class="text-end">
-              <a href="#" class="btn btn-sm btn-outline-secondary disabled" aria-disabled="true">Editar</a>
-              <a href="#" class="btn btn-sm btn-outline-danger disabled" aria-disabled="true">Excluir</a>
-            </td>
-          </tr>
-          <tr>
-            <td>104</td>
-            <td>
-              <div class="prod-thumb rounded border"></div>
-            </td>
-            <td>Ração Premium 10kg</td>
-            <td>GigaMax</td>
-            <td><span class="badge text-bg-light">Pets</span></td>
-            <td class="text-end">12</td>
-            <td class="text-end">R$ 129,00</td>
-            <td class="text-end">—</td>
-            <td>RAC-10K-001</td>
-            <td class="text-end">
-              <a href="#" class="btn btn-sm btn-outline-secondary disabled" aria-disabled="true">Editar</a>
-              <a href="#" class="btn btn-sm btn-outline-danger disabled" aria-disabled="true">Excluir</a>
-            </td>
-          </tr>
-          <tr>
-            <td>103</td>
-            <td>
-              <div class="prod-thumb rounded border"></div>
-            </td>
-            <td>Brinquedo Mordedor</td>
-            <td>Mobix</td>
-            <td><span class="badge text-bg-light">Pets</span></td>
-            <td class="text-end">80</td>
-            <td class="text-end">R$ 29,90</td>
-            <td class="text-end">—</td>
-            <td>BRQ-2025</td>
-            <td class="text-end">
-              <a href="#" class="btn btn-sm btn-outline-secondary disabled" aria-disabled="true">Editar</a>
-              <a href="#" class="btn btn-sm btn-outline-danger disabled" aria-disabled="true">Excluir</a>
-            </td>
-          </tr>
-          <!-- /EXEMPLOS -->
-        </tbody>
-        
-      </table>
-    </div>
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0 produtos-tabela" id="produtosTable">
+            <thead class="table-light">
+                  <th>Imagem</th>
+                    <th>Nome</th>
+                    <th>Descrição</th>
+                    <th>Qtd</th>
+                    <th>Preço</th>
+                    <th>Promoção</th>
+                    <th>Tamanho</th>
+                    <th>Cor</th>
+                    <th>Código</th>
+                    <th>Marca</th>
+                    <th>Categoria</th>
+                    <th class="text-end">Ações</th>
+            </thead>
+            <tbody>
+              <!-- EXEMPLOS ESTÁTICOS (substitua pelos seus dados quando integrar) -->
+            </tbody>
+            
+          </table>
+        </div>
   </div>
 </section>
 
@@ -381,5 +326,7 @@
   </script>
   <script src="../JS/marcas.js"></script>
   <script src="../JS/produtos_logista.js"></script>
+  <script src="../JS/produtos.js"></script>
+  
   </body>
 </html>

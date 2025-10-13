@@ -48,6 +48,33 @@ if (isset($_GET['listar']) && $_GET['listar'] == 1) {
     exit; // interrompe o resto do script
 }
 
+
+// ==========================================================
+// LISTAR APENAS NOMES DAS MARCAS - para JS (fetch)
+// LISTAR APENAS NOMES DAS MARCAS - para select
+if (isset($_GET['listarNomes']) && $_GET['listarNomes'] == 1) {
+    try {
+        $stmt = $pdo->query("SELECT IdMarcas, nome FROM MARCAS ORDER BY nome");
+        $marcas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if (count($marcas) > 0) {
+            foreach ($marcas as $row) {
+                echo "<option value='" . htmlspecialchars($row['IdMarcas']) . "'>"
+                     . htmlspecialchars($row['nome']) . "</option>";
+            }
+        } else {
+            echo "<option disabled>Nenhuma marca cadastrada</option>";
+        }
+    } catch (Exception $e) {
+        echo "<option disabled>Erro ao carregar nomes</option>";
+    }
+    exit; // essencial para não processar o restante do PHP
+}
+
+
+
+
+
 // ==========================================================
 // CADASTRO DE MARCA
 try {
