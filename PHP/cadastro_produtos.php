@@ -11,7 +11,6 @@ function redirecWith($url, $params = []) {
         $sep = (strpos($url, '?') === false) ? '?' : '&';
         $url .= $sep . $qs;
     }
-    // Garante que não há saída antes do header
     if (!headers_sent()) {
         header("Location: $url");
         exit;
@@ -32,7 +31,7 @@ function readImageToBlob(?array $file): ?string {
 // ==========================================
 // LISTAR PRODUTOS (para JS via fetch)
 if (isset($_GET['listar_produtos']) && $_GET['listar_produtos'] == 1) {
-    ob_start(); // Impede envio direto de cabeçalhos
+    ob_start();
     try {
         $sql = "
             SELECT 
@@ -49,15 +48,15 @@ if (isset($_GET['listar_produtos']) && $_GET['listar_produtos'] == 1) {
                 c.nome AS categoria,
                 (
                     SELECT i.foto 
-                    FROM IMAGEM_PRODUTO i
-                    JOIN PRODUTO_IMAGEM pi ON pi.imagem_produto = i.idImagem_produto
+                    FROM imagem_produto i
+                    JOIN produto_imagem pi ON pi.imagem_produto = i.idImagem_produto
                     WHERE pi.produto_id = p.idProdutos
                     LIMIT 1
                 ) AS imagem
-            FROM PRODUTOS p
-            LEFT JOIN MARCAS m ON p.marcas_id = m.IdMarcas
-            LEFT JOIN PRODUTO_CATEGORIA pc ON pc.produtos_id = p.idProdutos
-            LEFT JOIN CATEGORIA c ON pc.categoria_produtos = c.idCategoria
+            FROM produtos p
+            LEFT JOIN marcas m ON p.marcas_id = m.IdMarcas
+            LEFT JOIN produto_categoria pc ON pc.produtos_id = p.idProdutos
+            LEFT JOIN categoria c ON pc.categoria_produtos = c.idCategoria
             ORDER BY p.nome
         ";
 
@@ -67,16 +66,13 @@ if (isset($_GET['listar_produtos']) && $_GET['listar_produtos'] == 1) {
         if (count($produtos) > 0) {
             foreach ($produtos as $row) {
                 $imgSrc = $row['imagem'] ? "data:image/jpeg;base64," . base64_encode($row['imagem']) : "../IMG/sem-foto.png";
-
                 echo '<tr>';
                 echo '<td><img src="'.$imgSrc.'" alt="Imagem do produto" style="width:60px;height:auto;border-radius:6px;"></td>';
                 echo '<td>'.htmlspecialchars($row['nome']).'</td>';
                 echo '<td>'.htmlspecialchars($row['descricao']).'</td>';
                 echo '<td>'.htmlspecialchars($row['quantidade']).'</td>';
                 echo '<td>R$ '.number_format($row['preco'], 2, ',', '.').'</td>';
-                echo '<td>';
-                echo $row['preco_promocional'] ? 'R$ '.number_format($row['preco_promocional'], 2, ',', '.') : '-';
-                echo '</td>';
+                echo '<td>'.($row['preco_promocional'] ? 'R$ '.number_format($row['preco_promocional'], 2, ',', '.') : '-').'</td>';
                 echo '<td>'.htmlspecialchars($row['tamanho']).'</td>';
                 echo '<td>'.htmlspecialchars($row['cor']).'</td>';
                 echo '<td>'.htmlspecialchars($row['codigo']).'</td>';
@@ -94,7 +90,7 @@ if (isset($_GET['listar_produtos']) && $_GET['listar_produtos'] == 1) {
     } catch (Exception $e) {
         echo '<tr><td colspan="12" class="text-center">Erro ao carregar produtos</td></tr>';
     }
-    ob_end_flush(); // Libera a saída
+    ob_end_flush();
     exit;
 }
 
@@ -114,7 +110,8 @@ try {
     $cor = $_POST["cor"] ?? "";
     $codigo = (int)($_POST["codigo"] ?? 0);
     $preco_promocional = (double)($_POST["precopromocional"] ?? 0);
-    $marcas_id = 1;
+    $marcas_id = (int)($_POST["marcaproduto"] ?? 1);
+    $categoria_id = (int)($_POST["categoriaproduto"] ?? 0);
 
     // Imagens
     $imagens = [
@@ -125,7 +122,7 @@ try {
 
     // Validação
     $erros_validacao = [];
-    if ($nome === "" || $quantidade <= 0 || $preco <= 0 || $marcas_id <= 0) {
+    if ($nome === "" || $quantidade <= 0 || $preco <= 0 || $marcas_id <= 0 || $categoria_id <= 0) {
         $erros_validacao[] = "Preencha todos os campos obrigatórios corretamente.";
     }
     if (!empty($erros_validacao)) {
@@ -158,6 +155,17 @@ try {
 
     $idproduto = (int)$pdo->lastInsertId();
 
+    // Inserir categoria do produto corretamente
+    if ($categoria_id > 0) {
+        $sqlProdCat = "INSERT INTO produto_categoria (produtos_id, categoria_produtos)
+                       VALUES (:produto_id, :categoria_id)";
+        $stmProdCat = $pdo->prepare($sqlProdCat);
+        $stmProdCat->execute([
+            ':produto_id' => $idproduto,
+            ':categoria_id' => $categoria_id
+        ]);
+    }
+
     // Inserir imagens e vincular ao produto
     foreach ($imagens as $img) {
         if ($img !== null) {
@@ -178,7 +186,7 @@ try {
 
     $pdo->commit();
 
-    redirecWith("../paginas_logista/cadastro_produtos_logista.html", ["sucesso" => "Produto e imagens cadastrados com sucesso."]);
+    redirecWith("../paginas_logista/cadastro_produtos_logista.html", ["sucesso" => "Produto, categoria e imagens cadastrados com sucesso."]);
 
 } catch (Exception $e) {
     if ($pdo->inTransaction()) $pdo->rollBack();
