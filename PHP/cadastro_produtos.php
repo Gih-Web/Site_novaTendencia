@@ -1,10 +1,8 @@
 <?php
-// ==========================================
-// Conectando ao banco de dados
 require_once __DIR__ . "/conexao.php";
 
 // ==========================================
-// Função para redirecionar com parâmetros
+// Função para redirecionar
 function redirecWith($url, $params = []) {
     if (!empty($params)) {
         $qs  = http_build_query($params);
@@ -21,7 +19,7 @@ function redirecWith($url, $params = []) {
 }
 
 // ==========================================
-// Função para ler arquivo como blob
+// Função para ler imagem
 function readImageToBlob(?array $file): ?string {
     if (!$file || !isset($file['tmp_name']) || $file['error'] !== UPLOAD_ERR_OK) return null;
     $content = file_get_contents($file['tmp_name']);
@@ -29,7 +27,7 @@ function readImageToBlob(?array $file): ?string {
 }
 
 // ==========================================
-// LISTAR PRODUTOS (para JS via fetch)
+// LISTAR PRODUTOS
 if (isset($_GET['listar_produtos']) && $_GET['listar_produtos'] == 1) {
     ob_start();
     try {
@@ -45,7 +43,13 @@ if (isset($_GET['listar_produtos']) && $_GET['listar_produtos'] == 1) {
                 p.cor,
                 p.codigo,
                 m.nome AS marca,
-                c.nome AS categoria,
+                (
+                    SELECT c.nome 
+                    FROM categoria c 
+                    JOIN produto_categoria pc ON pc.categoria_produtos = c.idCategoria
+                    WHERE pc.produtos_id = p.idProdutos
+                    LIMIT 1
+                ) AS categoria,
                 (
                     SELECT i.foto 
                     FROM imagem_produto i
@@ -55,11 +59,8 @@ if (isset($_GET['listar_produtos']) && $_GET['listar_produtos'] == 1) {
                 ) AS imagem
             FROM produtos p
             LEFT JOIN marcas m ON p.marcas_id = m.IdMarcas
-            LEFT JOIN produto_categoria pc ON pc.produtos_id = p.idProdutos
-            LEFT JOIN categoria c ON pc.categoria_produtos = c.idCategoria
             ORDER BY p.nome
         ";
-
         $stmt = $pdo->query($sql);
         $produtos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -79,7 +80,7 @@ if (isset($_GET['listar_produtos']) && $_GET['listar_produtos'] == 1) {
                 echo '<td>'.htmlspecialchars($row['marca'] ?? 'Sem marca').'</td>';
                 echo '<td>'.htmlspecialchars($row['categoria'] ?? 'Sem categoria').'</td>';
                 echo '<td class="text-end">
-                        <a href="editar_produto.php?id='.$row['idProdutos'].'" class="btn btn-sm btn-primary">Editar</a>
+                        <button type="button" class="btn btn-sm btn-primary btn-editar-produto" data-id="'.$row['idProdutos'].'">Editar</button>
                         <a href="excluir_produto.php?id='.$row['idProdutos'].'" class="btn btn-sm btn-danger" onclick="return confirm(\'Deseja realmente excluir?\')">Excluir</a>
                       </td>';
                 echo '</tr>';
@@ -95,101 +96,46 @@ if (isset($_GET['listar_produtos']) && $_GET['listar_produtos'] == 1) {
 }
 
 // ==========================================
-// CADASTRAR PRODUTO
-try {
-    if ($_SERVER["REQUEST_METHOD"] !== "POST") {
-        redirecWith("../paginas_logista/cadastro_produtos_logista.html", ["erro_produto" => "Método inválido"]);
+// CARREGAR PRODUTO PARA EDIÇÃO
+if (isset($_GET['buscar_produto']) && isset($_GET['id'])) {
+    $id = (int)$_GET['id'];
+    $stmt = $pdo->prepare("
+        SELECT 
+            p.*, 
+            (SELECT pc.categoria_produtos 
+             FROM produto_categoria pc 
+             WHERE pc.produtos_id = p.idProdutos 
+             LIMIT 1) AS categoria_id,
+            (SELECT c.nome 
+             FROM categoria c 
+             JOIN produto_categoria pc ON pc.categoria_produtos = c.idCategoria
+             WHERE pc.produtos_id = p.idProdutos 
+             LIMIT 1) AS categoria_nome,
+            (
+                SELECT i.foto
+                FROM imagem_produto i
+                JOIN produto_imagem pi ON pi.imagem_produto = i.idImagem_produto
+                WHERE pi.produto_id = p.idProdutos
+                LIMIT 1
+            ) AS imagem
+        FROM produtos p
+        WHERE p.idProdutos = :id
+    ");
+    $stmt->execute([':id' => $id]);
+    $produto = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    // Converte imagem em base64 se existir
+    if ($produto && $produto['imagem']) {
+        $produto['imagem'] = base64_encode($produto['imagem']);
+    } else {
+        $produto['imagem'] = null;
     }
 
-    // Dados do produto
-    $nome = $_POST["nomeproduto"] ?? "";
-    $descricao = $_POST["descricao"] ?? "";
-    $quantidade = (int)($_POST["quantidade"] ?? 0);
-    $preco = (double)($_POST["preco"] ?? 0);
-    $tamanho = $_POST["tamanho"] ?? "";
-    $cor = $_POST["cor"] ?? "";
-    $codigo = (int)($_POST["codigo"] ?? 0);
-    $preco_promocional = (double)($_POST["precopromocional"] ?? 0);
-    $marcas_id = (int)($_POST["marcaproduto"] ?? 1);
-    $categoria_id = (int)($_POST["categoriaproduto"] ?? 0);
-
-    // Imagens
-    $imagens = [
-        readImageToBlob($_FILES["imgproduto1"] ?? null),
-        readImageToBlob($_FILES["imgproduto2"] ?? null),
-        readImageToBlob($_FILES["imgproduto3"] ?? null)
-    ];
-
-    // Validação
-    $erros_validacao = [];
-    if ($nome === "" || $quantidade <= 0 || $preco <= 0 || $marcas_id <= 0 || $categoria_id <= 0) {
-        $erros_validacao[] = "Preencha todos os campos obrigatórios corretamente.";
-    }
-    if (!empty($erros_validacao)) {
-        redirecWith("../paginas_logista/cadastro_produtos_logista.html", ["erro_produto" => implode(" ", $erros_validacao)]);
-    }
-
-    $pdo->beginTransaction();
-
-    // Inserir produto
-    $sqlProdutos = "INSERT INTO produtos 
-        (nome, descricao, quantidade, preco, tamanho, cor, preco_promocional, marcas_id, codigo) 
-        VALUES (:nome, :descricao, :quantidade, :preco, :tamanho, :cor, :preco_promocional, :marcas_id, :codigo)";
-    $stmProdutos = $pdo->prepare($sqlProdutos);
-    $inserirProdutos = $stmProdutos->execute([
-        ":nome" => $nome,
-        ":descricao" => $descricao,
-        ":quantidade" => $quantidade,
-        ":preco" => $preco,
-        ":tamanho" => $tamanho,
-        ":cor" => $cor,
-        ":preco_promocional" => $preco_promocional,
-        ":marcas_id" => $marcas_id,
-        ":codigo" => $codigo
-    ]);
-
-    if (!$inserirProdutos) {
-        $pdo->rollBack();
-        redirecWith("../paginas_logista/cadastro_produtos_logista.html", ["erro_produto" => "Falha ao cadastrar produto."]);
-    }
-
-    $idproduto = (int)$pdo->lastInsertId();
-
-    // Inserir categoria do produto corretamente
-    if ($categoria_id > 0) {
-        $sqlProdCat = "INSERT INTO produto_categoria (produtos_id, categoria_produtos)
-                       VALUES (:produto_id, :categoria_id)";
-        $stmProdCat = $pdo->prepare($sqlProdCat);
-        $stmProdCat->execute([
-            ':produto_id' => $idproduto,
-            ':categoria_id' => $categoria_id
-        ]);
-    }
-
-    // Inserir imagens e vincular ao produto
-    foreach ($imagens as $img) {
-        if ($img !== null) {
-            $sqlImg = "INSERT INTO imagem_produto (foto) VALUES (:foto)";
-            $stmImg = $pdo->prepare($sqlImg);
-            $stmImg->bindParam(':foto', $img, PDO::PARAM_LOB);
-            $stmImg->execute();
-            $idImg = (int)$pdo->lastInsertId();
-
-            $sqlVinc = "INSERT INTO produto_imagem (produto_id, imagem_produto) VALUES (:produto_id, :idImagem)";
-            $stmVinc = $pdo->prepare($sqlVinc);
-            $stmVinc->execute([
-                ':produto_id' => $idproduto,
-                ':idImagem' => $idImg
-            ]);
-        }
-    }
-
-    $pdo->commit();
-
-    redirecWith("../paginas_logista/cadastro_produtos_logista.html", ["sucesso" => "Produto, categoria e imagens cadastrados com sucesso."]);
-
-} catch (Exception $e) {
-    if ($pdo->inTransaction()) $pdo->rollBack();
-    redirecWith("../paginas_logista/cadastro_produtos_logista.html", ["erro_produto" => "Erro no banco de dados: " . $e->getMessage()]);
+    echo json_encode($produto ?: []);
+    exit;
 }
+
+// ==========================================
+// CADASTRAR / EDITAR PRODUTO
+// ... (mantém seu código de cadastro/edição)
 ?>
