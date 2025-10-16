@@ -14,6 +14,25 @@ function listarMarcas(nomeid) {
       console.error(e);
     }
   })();
+
+  // --- util 1) esc(): escapa caracteres especiais no texto (evita quebrar o HTML)
+   const esc = s => (s||'').replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+ 
+  // --- util 2) ph(): gera um SVG base64 com as iniciais, usado quando não há imagem
+  const ph  = n => 'data:image/svg+xml;base64,' + btoa(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60">
+       <rect width="100%" height="100%" fill="#eee"/>
+       <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+             font-family="sans-serif" font-size="12" fill="#999">
+         ${(n||'?').slice(0,2).toUpperCase()}
+       </text>
+     </svg>`
+  );
+
+
+
 }
 
 // Função para listar apenas nomes das marcas no select
@@ -31,6 +50,25 @@ function listarNomesMarcas(idSelect) {
       console.error(e);
     }
   })();
+
+
+  // --- util 1) esc(): escapa caracteres especiais no texto (evita quebrar o HTML)
+   const esc = s => (s||'').replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+ 
+  // --- util 2) ph(): gera um SVG base64 com as iniciais, usado quando não há imagem
+  const ph  = n => 'data:image/svg+xml;base64,' + btoa(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60">
+       <rect width="100%" height="100%" fill="#eee"/>
+       <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+             font-family="sans-serif" font-size="12" fill="#999">
+         ${(n||'?').slice(0,2).toUpperCase()}
+       </text>
+     </svg>`
+  );
+
+
 }
 
 // Chamadas corretas:

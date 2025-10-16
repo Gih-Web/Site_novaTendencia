@@ -1,64 +1,78 @@
 <?php
-// Conectando este arquivo ao banco de dados
-require_once __DIR__ ."/conexao.php";
+require_once __DIR__ . "/conexao.php";
 
-// função para capturar os dados passados de uma página a outra
-function redirecWith($url,$params=[]){
-// verifica se os os paramentros não vieram vazios
- if(!empty($params)){
-// separar os parametros em espaços diferentes
-$qs= http_build_query($params);
-$sep = (strpos($url,'?') === false) ? '?': '&';
-$url .= $sep . $qs;
+// Força retorno JSON
+header('Content-Type: application/json');
+
+// ======================================
+// 1️⃣ Listar formas de pagamento via GET
+// ======================================
+if (isset($_GET['acao']) && $_GET['acao'] === 'listar') {
+    try {
+        $stmt = $pdo->query("SELECT idForma_pagamento, nome FROM forma_pagamento ORDER BY idForma_pagamento ASC");
+        $formas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        echo json_encode([
+            "status" => "ok",
+            "data" => $formas
+        ]);
+        exit;
+    } catch (\Exception $e) {
+        echo json_encode([
+            "status" => "erro",
+            "mensagem" => "Erro ao buscar formas de pagamento: " . $e->getMessage()
+        ]);
+        exit;
+    }
 }
-// joga a url para o cabeçalho no navegador
-header("Location:  $url");
-// fecha o script
+
+// ======================================
+// 2️⃣ Cadastrar forma de pagamento via POST
+// ======================================
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    try {
+        $nomepagamento = $_POST["nomepagamento"] ?? "";
+
+        // validação simples
+        if (trim($nomepagamento) === "") {
+            echo json_encode([
+                "status" => "erro",
+                "mensagem" => "Preencha todos os campos"
+            ]);
+            exit;
+        }
+
+        // Inserir no banco
+        $sql = "INSERT INTO forma_pagamento (nome) VALUES (:nomepagamento)";
+        $stmt = $pdo->prepare($sql);
+        $executou = $stmt->execute([":nomepagamento" => $nomepagamento]);
+
+        if ($executou) {
+            echo json_encode([
+                "status" => "ok",
+                "mensagem" => "Forma de pagamento cadastrada com sucesso"
+            ]);
+        } else {
+            echo json_encode([
+                "status" => "erro",
+                "mensagem" => "Erro ao cadastrar no banco de dados"
+            ]);
+        }
+    } catch (\Exception $e) {
+        echo json_encode([
+            "status" => "erro",
+            "mensagem" => "Erro no banco de dados: " . $e->getMessage()
+        ]);
+    }
+    exit;
+}
+
+// ======================================
+// Caso nenhum método válido seja usado
+// ======================================
+echo json_encode([
+    "status" => "erro",
+    "mensagem" => "Ação inválida"
+]);
 exit;
-}
-
-try{
-     // SE O METODO DE ENVIO FOR DIFERENTE DO POST
-    if($_SERVER["REQUEST_METHOD"] !== "POST"){
-        //VOLTAR À TELA DE CADASTRO E EXIBIR ERRO
-        redirecWith("../paginas/frete_pagamento.html",
-           ["erro"=> "Metodo inválido"]);
-    }
-
-    // variaveis
-    $nomepagamento = $_POST["nomepagamento"];
-
-     // validação
-    $erros_validacao=[];
-    //se qualquer campo for vazio
-    if( $nomepagamento === "" ){
-        $erros_validacao[]="Preencha todos os campos";
-    }
-
-    /* Inserir o frete no banco de dados */
-    $sql ="INSERT INTO 
-    forma_pagamento (nome)
-     Values (:nomepagamento)";
-     // executando o comando no banco de dados
-     $inserir = $pdo->prepare($sql)->execute([
-        ":nomepagamento" => $nomepagamento,
-     ]);
-
-        /* Verificando se foi cadastrado no banco de dados */
-     if($inserir){
-        redirecWith("../paginas/frete_pagamento_logista.html",
-        ["cadastro" => "ok"]) ;
-     }else{
-        redirecWith("../paginas/frete_pagamento_logista.html"
-        ,["erro" =>"Erro ao cadastrar no banco
-         de dados"]);
-     }
-
-}catch(\Exception $e){
-redirecWith("../paginas/frete_pagamento_logista.html",
-      ["erro" => "Erro no banco de dados: "
-      .$e->getMessage()]);
-}
-
-
 ?>
