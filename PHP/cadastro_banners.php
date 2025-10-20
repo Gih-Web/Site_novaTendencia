@@ -1,59 +1,85 @@
 <?php
 require_once __DIR__ . "/conexao.php";
-header('Content-Type: application/json');
 
-// ==========================
-// LISTAR BANNERS
-// ==========================
-if (isset($_GET['acao']) && $_GET['acao'] === 'listar') {
-    try {
-        $stmt = $pdo->query("SELECT B.idBanners, B.descricao, B.link, B.categoria_id, B.data_validade, C.nome AS categoria_nome
-                             FROM BANNERS B
-                             LEFT JOIN CATEGORIA C ON B.categoria_id = C.idCategoria
-                             ORDER BY B.idBanners ASC");
-        $banners = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        echo json_encode(["status" => "ok", "data" => $banners]);
-    } catch (\Exception $e) {
-        echo json_encode(["status" => "erro", "mensagem" => $e->getMessage()]);
+// Função para redirecionamento com parâmetros
+function redirecWith($url, $params = []) {
+    if (!empty($params)) {
+        $qs = http_build_query($params);
+        $sep = (strpos($url, '?') === false) ? '?' : '&';
+        $url .= $sep . $qs;
     }
+    header("Location: $url");
     exit;
 }
 
-// ==========================
-// CADASTRAR BANNER
-// ==========================
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    try {
-        $descricao = $_POST['descricao'] ?? '';
-        $link = $_POST['link'] ?? '';
-        $categoria_id = $_POST['categoria_id'] ?? null;
-        $data_validade = $_POST['data_validade'] ?? null;
+// Função para ler upload de imagem
+function readImageToBlob(?array $file): ?string {
+    if (!$file || !isset($file['tmp_name']) || $file['error'] !== UPLOAD_ERR_OK) return null;
+    $content = file_get_contents($file['tmp_name']);
+    return $content === false ? null : $content;
+}
 
-        if (!isset($_FILES['imagem']) || $_FILES['imagem']['error'] != 0) {
-            echo json_encode(["status" => "erro", "mensagem" => "Envie uma imagem válida"]);
-            exit;
+try {
+    $method = $_SERVER["REQUEST_METHOD"];
+
+    if ($method === "POST") {
+        // Cadastro ou atualização
+        $id = $_POST["id"] ?? null;
+        $descricao = $_POST["descricao"] ?? "";
+        $link = $_POST["link"] ?? "";
+        $categoria = $_POST["categoria"] ?? null;
+        $validade = $_POST["validade"] ?? null;
+
+        $img = readImageToBlob($_FILES["imagem"] ?? null);
+
+        // Validação mínima
+        if ($descricao === "" || $link === "" || !$img) {
+            redirecWith("../paginas_logista/banners.html", ["erro" => "Preencha todos os campos e selecione uma imagem."]);
         }
 
-        $imagem = file_get_contents($_FILES['imagem']['tmp_name']);
+        if ($id) {
+            // Atualização
+            $sql = "UPDATE banners SET descricao=:descricao, link=:link, categoria_id=:categoria, validade=:validade, imagem=:imagem WHERE id=:id";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([
+                ":descricao"=>$descricao,
+                ":link"=>$link,
+                ":categoria"=>$categoria ?: null,
+                ":validade"=>$validade ?: null,
+                ":imagem"=>$img,
+                ":id"=>$id
+            ]);
+        } else {
+            // Inserção
+            $sql = "INSERT INTO banners (descricao, link, categoria_id, validade, imagem) VALUES (:descricao,:link,:categoria,:validade,:imagem)";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([
+                ":descricao"=>$descricao,
+                ":link"=>$link,
+                ":categoria"=>$categoria ?: null,
+                ":validade"=>$validade ?: null,
+                ":imagem"=>$img
+            ]);
+        }
 
-        $sql = "INSERT INTO BANNERS (imagem, descricao, link, categoria_id, data_validade)
-                VALUES (:imagem, :descricao, :link, :categoria_id, :data_validade)";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([
-            ":imagem" => $imagem,
-            ":descricao" => $descricao,
-            ":link" => $link,
-            ":categoria_id" => $categoria_id,
-            ":data_validade" => $data_validade
-        ]);
-
-        echo json_encode(["status" => "ok", "mensagem" => "Banner cadastrado com sucesso"]);
-
-    } catch (\Exception $e) {
-        echo json_encode(["status" => "erro", "mensagem" => $e->getMessage()]);
+        redirecWith("../paginas_logista/banners.html", ["ok"=>1]);
+    } elseif ($method === "GET" && isset($_GET["listar"])) {
+        // Listagem para JS
+        $stmt = $pdo->query("SELECT b.id, b.descricao, b.link, b.validade, b.categoria_id, c.nome as categoria_nome FROM banners b LEFT JOIN categorias c ON b.categoria_id = c.id ORDER BY b.id DESC");
+        $banners = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($banners);
+    } elseif ($method === "GET" && isset($_GET["categorias"])) {
+        // Lista de categorias para select
+        $stmt = $pdo->query("SELECT id, nome FROM categorias ORDER BY nome");
+        $cats = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($cats);
+    } elseif ($method === "POST" && isset($_POST["excluir_id"])) {
+        // Exclusão
+        $stmt = $pdo->prepare("DELETE FROM banners WHERE id=:id");
+        $stmt->execute([":id"=>$_POST["excluir_id"]]);
+        echo json_encode(["ok"=>true]);
     }
-    exit;
-}
 
-echo json_encode(["status" => "erro", "mensagem" => "Ação inválida"]);
-exit;
+} catch (Exception $e) {
+    echo json_encode(["erro"=>$e->getMessage()]);
+}

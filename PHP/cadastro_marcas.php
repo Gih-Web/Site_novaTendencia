@@ -1,122 +1,111 @@
 <?php
-// Conectando este arquivo ao banco de dados
-require_once __DIR__ . "/conexao.php";
+require_once __DIR__ . '/conexao.php';
 
-// função para capturar os dados passados de uma página a outra
-function redirecWith($url, $params = []) {
-    if (!empty($params)) {
-        $qs  = http_build_query($params);
-        $sep = (strpos($url, '?') === false) ? '?' : '&';
-        $url .= $sep . $qs;
+// =============================================
+// Função auxiliar para redirecionar com parâmetros
+// =============================================
+function redirect_with(string $url, array $params = []): void {
+  if ($params) {
+    $qs  = http_build_query($params);
+    $url .= (strpos($url, '?') === false ? '?' : '&') . $qs;
+  }
+  header("Location: $url");
+  exit;
+}
+
+// =============================================
+// Função para ler imagem e transformar em blob
+// =============================================
+function read_image_to_blob(?array $file): ?string {
+  if (!$file || !isset($file['tmp_name']) || $file['error'] !== UPLOAD_ERR_OK) return null;
+  $bin = file_get_contents($file['tmp_name']);
+  return $bin === false ? null : $bin;
+}
+
+// =============================================
+// LISTAGEM DE MARCAS (usada pelo JS via fetch)
+// =============================================
+if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["listar"])) {
+  header('Content-Type: application/json; charset=utf-8');
+
+  try {
+    $stmt = $pdo->query("SELECT idMarcas, nome, imagem FROM Marcas ORDER BY idMarcas DESC");
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $marcas = array_map(function ($r) {
+      return [
+        'idMarcas' => (int)$r['idMarcas'],
+        'nome'     => $r['nome'],
+        'imagem'   => !empty($r['imagem']) ? base64_encode($r['imagem']) : null
+      ];
+    }, $rows);
+
+    echo json_encode([
+      'ok' => true,
+      'count' => count($marcas),
+      'marcas' => $marcas
+    ], JSON_UNESCAPED_UNICODE);
+
+  } catch (Throwable $e) {
+    http_response_code(500);
+    echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+  }
+
+  exit;
+}
+
+
+// =====================================================
+// LISTAR APENAS NOMES DAS MARCAS (para <select> via JS)
+// =====================================================
+if (isset($_GET['listarNomes']) && $_GET['listarNomes'] == 1) {
+    header('Content-Type: application/json; charset=utf-8');
+
+    try {
+        $stmt = $pdo->query("SELECT IdMarcas, nome FROM Marcas ORDER BY nome");
+        $marcas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        echo json_encode($marcas, JSON_UNESCAPED_UNICODE);
+    } catch (Exception $e) {
+        echo json_encode(["erro" => "Erro ao carregar nomes das marcas"]);
     }
-    header("Location: $url");
     exit;
 }
 
-/* Lê arquivo de upload como blob (ou null) */
-function readImageToBlob(?array $file): ?string {
-    if (!$file || !isset($file['tmp_name']) || $file['error'] !== UPLOAD_ERR_OK) return null;
-    $content = file_get_contents($file['tmp_name']);
-    return $content === false ? null : $content;
-}
 
-// ==========================================================
-// LISTAR MARCAS - para JS (fetch)
-if (isset($_GET['listar']) && $_GET['listar'] == 1) {
-    try {
-        $stmt = $pdo->query("SELECT IdMarcas, nome, imagem FROM MARCAS ORDER BY nome");
-        $marcas = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        if (count($marcas) > 0) {
-            foreach ($marcas as $row) {
-                $imgSrc = $row['imagem'] ? "data:image/jpeg;base64," . base64_encode($row['imagem']) : "";
-                echo '<tr>';
-                echo '<td><img src="'.$imgSrc.'" alt="'.htmlspecialchars($row['nome']).'" style="width:50px;height:auto;border-radius:5px;"></td>';
-                echo '<td>'.htmlspecialchars($row['nome']).'</td>';
-                echo '<td class="text-end">
-                        <a href="editar_marca.php?id='.$row['IdMarcas'].'" class="btn btn-sm btn-primary">Editar</a>
-                        <a href="excluir_marca.php?id='.$row['IdMarcas'].'" class="btn btn-sm btn-danger" onclick="return confirm(\'Deseja realmente excluir?\')">Excluir</a>
-                      </td>';
-                echo '</tr>';
-            }
-        } else {
-            echo '<tr><td colspan="3" class="text-center">Nenhuma marca cadastrada</td></tr>';
-        }
-    } catch (Exception $e) {
-        echo '<tr><td colspan="3" class="text-center">Erro ao carregar marcas</td></tr>';
-    }
-    exit; // interrompe o resto do script
-}
-
-
-// ==========================================================
-// LISTAR APENAS NOMES DAS MARCAS - para JS (fetch)
-// LISTAR APENAS NOMES DAS MARCAS - para select
-if (isset($_GET['listarNomes']) && $_GET['listarNomes'] == 1) {
-    try {
-        $stmt = $pdo->query("SELECT IdMarcas, nome FROM MARCAS ORDER BY nome");
-        $marcas = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        if (count($marcas) > 0) {
-            foreach ($marcas as $row) {
-                echo "<option value='" . htmlspecialchars($row['IdMarcas']) . "'>"
-                     . htmlspecialchars($row['nome']) . "</option>";
-            }
-        } else {
-            echo "<option disabled>Nenhuma marca cadastrada</option>";
-        }
-    } catch (Exception $e) {
-        echo "<option disabled>Erro ao carregar nomes</option>";
-    }
-    exit; // essencial para não processar o restante do PHP
-}
-
-
-
-
-
-// ==========================================================
-// CADASTRO DE MARCA
+// =============================================
+// CADASTRO DE NOVA MARCA
+// =============================================
 try {
-    if ($_SERVER["REQUEST_METHOD"] !== "POST") {
-        redirecWith("../paginas_logista/cadastro_produtos_logista.html",
-            ["erro_marca" => "Método inválido"]);
-    }
+  if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    redirect_with('../PAGINAS_LOGISTA/cadastro_marcas_logista.html', [
+      'erro_marca' => 'Método inválido'
+    ]);
+  }
 
-    $nomemarca = trim($_POST["nomemarca"] ?? "");
-    $imgBlob   = readImageToBlob($_FILES["imagemmarca"] ?? null);
+  $nome = trim($_POST['nomemarca'] ?? '');
+  $imgBlob = read_image_to_blob($_FILES['imagemmarca'] ?? null);
 
-    $erros_validacao = [];
-    if ($nomemarca === "") {
-        $erros_validacao[] = "Preencha o nome da marca.";
-    }
+  if ($nome === '') {
+    redirect_with('../PAGINAS_LOGISTA/cadastro_marcas_logista.html', [
+      'erro_marca' => 'Preencha o nome da marca.'
+    ]);
+  }
 
-    if (!empty($erros_validacao)) {
-        redirecWith("../paginas_logista/cadastro_produtos_logista.html",
-            ["erro_marca" => implode(" ", $erros_validacao)]);
-    }
+  $sql = "INSERT INTO Marcas (nome, imagem) VALUES (:n, :i)";
+  $st  = $pdo->prepare($sql);
+  $st->bindValue(':n', $nome, PDO::PARAM_STR);
+  if ($imgBlob === null) $st->bindValue(':i', null, PDO::PARAM_NULL);
+  else $st->bindValue(':i', $imgBlob, PDO::PARAM_LOB);
+  $st->execute();
 
-    $sql  = "INSERT INTO MARCAS (nome, imagem) VALUES (:nome, :img)";
-    $stmt = $pdo->prepare($sql);
-    $stmt->bindValue(":nome", $nomemarca, PDO::PARAM_STR);
-    if ($imgBlob === null) {
-        $stmt->bindValue(":img", null, PDO::PARAM_NULL);
-    } else {
-        $stmt->bindValue(":img", $imgBlob, PDO::PARAM_LOB);
-    }
+  redirect_with('../PAGINAS_LOGISTA/cadastro_marcas_logista.html', [
+    'cadastro_marca' => 'ok'
+  ]);
 
-    $ok = $stmt->execute();
-
-    if ($ok) {
-        redirecWith("../paginas_logista/cadastro_produtos_logista.html",
-            ["cadastro_marca" => "ok"]);
-    } else {
-        redirecWith("../paginas_logista/cadastro_produtos_logista.html",
-            ["erro_marca" => "Falha ao cadastrar marca."]);
-    }
-
-} catch (Exception $e) {
-    redirecWith("../paginas_logista/cadastro_produtos_logista.html",
-        ["erro_marca" => "Erro no banco de dados: " . $e->getMessage()]);
+} catch (Throwable $e) {
+  redirect_with('../PAGINAS_LOGISTA/cadastro_marcas_logista.html', [
+    'erro_marca' => 'Erro no banco de dados: ' . $e->getMessage()
+  ]);
 }
 ?>
