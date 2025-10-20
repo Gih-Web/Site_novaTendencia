@@ -96,4 +96,4 @@ async function listarNomesMarcas(idSelect) {
   }
 }
 
-listarNomesMarcas("#selectMarcas");
+listarNomesMarcas("#pMarcas");
