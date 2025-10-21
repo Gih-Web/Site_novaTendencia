@@ -24,20 +24,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ================= Função para listar categorias em <select> =================
   async function listarcategorias(nomeid) {
-    const sel = document.querySelector(nomeid);
-    if (!sel) return;
+  const sel = document.querySelector(nomeid);
+  if (!sel) return;
 
-    try {
-      const r = await fetch("../PHP/cadastro_categorias.php?listar=1");
-      if (!r.ok) throw new Error("Falha ao listar categorias!");
-      sel.innerHTML = await r.text();
-    } catch (e) {
-      sel.innerHTML = "<option disabled>Erro ao carregar</option>";
-    }
+  try {
+    const r = await fetch("../PHP/cadastro_categorias.php?listar=1&format=json");
+    if (!r.ok) throw new Error("Falha ao listar categorias!");
+    const data = await r.json();
+
+    // Primeira opção fixa
+    sel.innerHTML = '<option value="0" selected>Selecione uma categoria...</option>';
+
+    // Inserindo categorias do banco
+    data.categorias?.forEach(c => {
+      const opt = document.createElement("option");
+      opt.value = c.idCategoria;  // valor real do banco
+      opt.textContent = c.nome;
+      sel.appendChild(opt);
+    });
+  } catch (e) {
+    sel.innerHTML = '<option value="0" disabled>Erro ao carregar</option>';
   }
+}
+
 
   // ================= Listagem de banners =================
-  function listarBanners(tbbanner) {
+  async function listarBanners(tbbanner) {
     const tbody = document.getElementById(tbbanner);
     if (!tbody) return;
     const url = "../PHP/banners.php?listar=1";
@@ -74,19 +86,20 @@ document.addEventListener("DOMContentLoaded", () => {
       `;
     };
 
-    fetch(url, { cache: "no-store" })
-      .then(r => r.json())
-      .then(d => {
-        if (!d.ok) throw new Error(d.error || "Erro ao listar banners");
-        const arr = d.banners || [];
-        tbody.innerHTML = arr.length
-          ? arr.map(row).join("")
-          : `<tr><td colspan="6" class="text-center text-muted">Nenhum banner cadastrado.</td></tr>`;
-      })
-      .catch(err => {
-        tbody.innerHTML = `<tr><td colspan="6" class="text-center text-danger">Falha ao carregar: ${esc(err.message)}</td></tr>`;
-      });
+    try {
+      const res = await fetch(url, { cache: "no-store" });
+      const d = await res.json();
+      if (!d.ok) throw new Error(d.error || "Erro ao listar banners");
+      const arr = d.banners || [];
+      tbody.innerHTML = arr.length
+        ? arr.map(row).join("")
+        : `<tr><td colspan="6" class="text-center text-muted">Nenhum banner cadastrado.</td></tr>`;
+    } catch(err) {
+      tbody.innerHTML = `<tr><td colspan="6" class="text-center text-danger">Falha ao carregar: ${esc(err.message)}</td></tr>`;
+    }
   }
+
+
 
   // ================= Listagem de cupons =================
   function listarCupons(tbcupom) {
@@ -128,9 +141,13 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 
+
+
   // ================= Chamadas =================
+
   listarBanners("tbBanners");
-  listarCupons("tabelaCupons");
   listarcategorias("#categoriaBanner");
+
+  listarCupons("tabelaCupons");
   listarcategorias("#categoriasPromocoes");
 });

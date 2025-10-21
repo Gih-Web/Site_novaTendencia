@@ -1,178 +1,115 @@
 <?php
+// cadastro_banners.php
 require_once __DIR__ . '/conexao.php';
 
-// ================================================
-// FUNÇÃO AUXILIAR: Redirecionamento com parâmetros
-// ================================================
+/* ---------------------- FUNÇÕES ---------------------- */
 function redirect_with(string $url, array $params = []): void {
-    if (!empty($params)) {
-        $qs  = http_build_query($params);
-        $url .= (strpos($url, '?') === false ? '?' : '&') . $qs;
-    }
-    header("Location: $url");
-    exit;
+  if ($params) {
+    $qs  = http_build_query($params);
+    $url .= (strpos($url, '?') === false ? '?' : '&') . $qs;
+  }
+  header("Location: $url");
+  exit;
 }
 
-// ================================================
-// FUNÇÃO AUXILIAR: Ler imagem e converter em BLOB
-// ================================================
 function read_image_to_blob(?array $file): ?string {
-    if (!$file || !isset($file['tmp_name']) || $file['error'] !== UPLOAD_ERR_OK) return null;
-    $bin = file_get_contents($file['tmp_name']);
-    return $bin === false ? null : $bin;
+  if (!$file || !isset($file['tmp_name']) || $file['error'] !== UPLOAD_ERR_OK) return null;
+  $bin = file_get_contents($file['tmp_name']);
+  return $bin === false ? null : $bin;
 }
 
-// ================================================
-// LISTAGEM DE PRODUTOS (GET ?listar=1)
-// ================================================
-if (isset($_GET['listar']) && $_GET['listar'] == 1) {
-    header('Content-Type: application/json; charset=utf-8');
+/*  =====================LISTAGEM================================== */
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['listar'])) {
+  header('Content-Type: application/json; charset=utf-8');
 
-    try {
-        $stmt = $pdo->query("
-            SELECT p.idProdutos AS idProduto,
-                   p.nome,
-                   p.descricao,
-                   p.quantidade,
-                   p.preco,
-                   p.preco_promocional,
-                   p.tamanho,
-                   p.cor,
-                   p.codigo,
-                   c.nome AS categoria,
-                   m.nome AS marca,
-                   ip.foto AS imagem
-            FROM PRODUTOS p
-            LEFT JOIN PRODUTO_CATEGORIA pc ON p.idProdutos = pc.produtos_id
-            LEFT JOIN CATEGORIA c ON pc.categoria_produtos = c.idCategoria
-            LEFT JOIN MARCAS m ON p.marcas_id = m.IdMarcas
-            LEFT JOIN PRODUTO_IMAGEM pim ON p.idProdutos = pim.produto_id
-            LEFT JOIN IMAGEM_PRODUTO ip ON pim.imagem_produto = ip.idImagem_produto
-            GROUP BY p.idProdutos
-            ORDER BY p.idProdutos DESC
-        ");
+  try {
+    $sql = "SELECT
+              b.idBannres             AS id,
+              b.imagem                AS imagem,
+              b.data_validade         AS data_validade,
+              b.descricao             AS descricao,
+              b.link                  AS link,
+              b.categoria_id          AS categoria_id,
+              c.nome                  AS categoria_nome
+            FROM BANNERS b
+            LEFT JOIN CATEGORIA c
+              ON c.idCategoria = b.categoria_id
+            ORDER BY b.idBannres DESC";
 
-        $produtos = array_map(function($p) {
-            return [
-                'idProduto' => (int)$p['idProduto'],
-                'nome' => $p['nome'],
-                'descricao' => $p['descricao'],
-                'quantidade' => (int)$p['quantidade'],
-                'preco' => (float)$p['preco'],
-                'precoPromocional' => $p['preco_promocional'] !== null ? (float)$p['preco_promocional'] : null,
-                'tamanho' => $p['tamanho'],
-                'cor' => $p['cor'],
-                'codigo' => $p['codigo'],
-                'categoria' => $p['categoria'] ?? '-',
-                'marca' => $p['marca'] ?? '-',
-                'imagem' => !empty($p['imagem']) ? base64_encode($p['imagem']) : null
-            ];
-        }, $stmt->fetchAll(PDO::FETCH_ASSOC));
+    $stmt = $pdo->query($sql);
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        echo json_encode(['ok' => true, 'produtos' => $produtos], JSON_UNESCAPED_UNICODE);
+    $banners = array_map(function ($r) {
+      return [
+        'id'             => (int)$r['id'],
+        'descricao'      => $r['descricao'],
+        'data_validade'  => $r['data_validade'],
+        'link'           => $r['link'] !== '' ? $r['link'] : null,
+        'categoria_id'   => $r['categoria_id'] !== null ? (int)$r['categoria_id'] : null,
+        'categoria_nome' => $r['categoria_nome'] ?? null,
+        'imagem'         => !empty($r['imagem']) ? base64_encode($r['imagem']) : null,
+      ];
+    }, $rows);
 
-    } catch (Throwable $e) {
-        echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
-    }
+    echo json_encode(['ok' => true, 'count' => count($banners), 'banners' => $banners], JSON_UNESCAPED_UNICODE);
+    exit;
 
-    exit; // Muito importante: impede que HTML seja retornado
+  } catch (Throwable $e) {
+    http_response_code(500);
+    echo json_encode(['ok' => false, 'error' => 'Erro ao listar banners', 'detail' => $e->getMessage()], JSON_UNESCAPED_UNICODE);
+    exit;
+  }
 }
 
-// ================================================
-// CADASTRO DE PRODUTOS (POST)
-// ================================================
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nome        = trim($_POST['nomeproduto'] ?? '');
-    $descricao   = trim($_POST['descricao'] ?? '');
-    $quantidade  = (int)($_POST['quantidade'] ?? 0);
-    $preco       = (float)($_POST['preco'] ?? 0);
-    $tamanho     = trim($_POST['tamanho'] ?? '');
-    $cor         = trim($_POST['cor'] ?? '');
-    $codigo      = trim($_POST['codigo'] ?? '');
-    $precoPromo  = $_POST['precopromocional'] !== '' ? (float)$_POST['precopromocional'] : null;
-    $categoriaId = (int)($_POST['categoriaproduto'] ?? 0);
-    $marcaId     = (int)($_POST['marcaproduto'] ?? 0);
 
-    // Validação mínima
-    if ($nome === '' || $quantidade <= 0 || $preco <= 0 || $codigo === '' || $marcaId <= 0) {
-        redirect_with('../PAGINAS_LOGISTA/produtos_logista.html', [
-            'erro_produto' => 'Preencha todos os campos obrigatórios.'
-        ]);
-    }
+/*  ============================CADASTRO=========================== */
+try {
+  if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    redirect_with('../PAGINAS_LOGISTA/promocoes_logista.html', ['erro_banner' => 'Método inválido']);
+  }
 
-    try {
-        $pdo->beginTransaction();
+  $descricao = trim($_POST['descricao'] ?? '');
+  $dataVal   = trim($_POST['data'] ?? '');
+  $link      = trim($_POST['link'] ?? '');
+  $categoria = $_POST['categoriab'] ?? null;
+  $categoria = ($categoria === '' || $categoria === null) ? null : (int)$categoria;
 
-        // Inserir produto
-        $sqlProduto = "INSERT INTO PRODUTOS
-            (nome, descricao, quantidade, preco, tamanho, cor, codigo, preco_promocional, marcas_id)
-            VALUES (:nome, :descricao, :quantidade, :preco, :tamanho, :cor, :codigo, :precoPromo, :marcaId)";
+  $imgBlob   = read_image_to_blob($_FILES['foto'] ?? null);
 
-        $stmt = $pdo->prepare($sqlProduto);
-        $stmt->bindValue(':nome', $nome);
-        $stmt->bindValue(':descricao', $descricao);
-        $stmt->bindValue(':quantidade', $quantidade, PDO::PARAM_INT);
-        $stmt->bindValue(':preco', $preco);
-        $stmt->bindValue(':tamanho', $tamanho);
-        $stmt->bindValue(':cor', $cor);
-        $stmt->bindValue(':codigo', $codigo);
-        if ($precoPromo === null) $stmt->bindValue(':precoPromo', null, PDO::PARAM_NULL);
-        else $stmt->bindValue(':precoPromo', $precoPromo);
-        $stmt->bindValue(':marcaId', $marcaId, PDO::PARAM_INT);
-        $stmt->execute();
+  // validações mínimas
+  $erros = [];
+  if ($descricao === '') { $erros[] = 'Informe a descrição.'; }
+  elseif (mb_strlen($descricao) > 45) { $erros[] = 'Descrição deve ter no máximo 45 caracteres.'; }
 
-        $produtoId = (int)$pdo->lastInsertId();
+  $dt = DateTime::createFromFormat('Y-m-d', $dataVal);
+  if (!($dt && $dt->format('Y-m-d') === $dataVal)) { $erros[] = 'Data de validade inválida (use YYYY-MM-DD).'; }
 
-        // Inserir imagens
-        $imagens = [
-            $_FILES['imgproduto1'] ?? null,
-            $_FILES['imgproduto2'] ?? null,
-            $_FILES['imgproduto3'] ?? null
-        ];
+  if ($link !== '' && mb_strlen($link) > 100) { $erros[] = 'Link deve ter no máximo 100 caracteres.'; }
 
-        foreach ($imagens as $img) {
-            $blob = read_image_to_blob($img);
-            if ($blob === null) continue;
+  if ($imgBlob === null) { $erros[] = 'Envie a imagem do banner.'; }
 
-            $sqlImg = "INSERT INTO IMAGEM_PRODUTO (foto, texto_alternativo)
-                       VALUES (:foto, :alt)";
-            $stmtImg = $pdo->prepare($sqlImg);
-            $stmtImg->bindValue(':foto', $blob, PDO::PARAM_LOB);
-            $stmtImg->bindValue(':alt', $nome);
-            $stmtImg->execute();
+  if ($erros) {
+    redirect_with('../PAGINAS_LOGISTA/promocoes_logista.html', ['erro_banner' => implode(' ', $erros)]);
+  }
 
-            $imgId = (int)$pdo->lastInsertId();
+  $sql = "INSERT INTO BANNERS (imagem, data_validade, descricao, link, categoria_id)
+          VALUES (:img, :dt, :desc, :lnk, :cat)";
+  $st  = $pdo->prepare($sql);
 
-            $sqlRel = "INSERT INTO PRODUTO_IMAGEM (produto_id, imagem_produto)
-                       VALUES (:produto, :imagem)";
-            $stmtRel = $pdo->prepare($sqlRel);
-            $stmtRel->bindValue(':produto', $produtoId, PDO::PARAM_INT);
-            $stmtRel->bindValue(':imagem', $imgId, PDO::PARAM_INT);
-            $stmtRel->execute();
-        }
+  $st->bindValue(':img',  $imgBlob, PDO::PARAM_LOB);
+  $st->bindValue(':dt',   $dataVal, PDO::PARAM_STR);
+  $st->bindValue(':desc', $descricao, PDO::PARAM_STR);
+  $link === ''
+    ? $st->bindValue(':lnk', null, PDO::PARAM_NULL)
+    : $st->bindValue(':lnk', $link, PDO::PARAM_STR);
+  $categoria === null
+    ? $st->bindValue(':cat', null, PDO::PARAM_NULL)
+    : $st->bindValue(':cat', $categoria, PDO::PARAM_INT);
 
-        // Relacionar produto com categoria
-        if ($categoriaId > 0) {
-            $sqlCat = "INSERT INTO PRODUTO_CATEGORIA (produtos_id, produtos_marcas_id, categoria_produtos)
-                       VALUES (:prod, :marca, :cat)";
-            $stmtCat = $pdo->prepare($sqlCat);
-            $stmtCat->bindValue(':prod', $produtoId, PDO::PARAM_INT);
-            $stmtCat->bindValue(':marca', $marcaId, PDO::PARAM_INT);
-            $stmtCat->bindValue(':cat', $categoriaId, PDO::PARAM_INT);
-            $stmtCat->execute();
-        }
+  $st->execute();
 
-        $pdo->commit();
+  redirect_with('../PAGINAS_LOGISTA/promocoes_logista.html', ['cadastro_banner' => 'ok']);
 
-        redirect_with('../PAGINAS_LOGISTA/produtos_logista.html', [
-            'cadastro_produto' => 'ok'
-        ]);
-
-    } catch (Throwable $e) {
-        $pdo->rollBack();
-        redirect_with('../PAGINAS_LOGISTA/produtos_logista.html', [
-            'erro_produto' => 'Erro ao cadastrar: ' . $e->getMessage()
-        ]);
-    }
+} catch (Throwable $e) {
+  redirect_with('../PAGINAS_LOGISTA/promocoes_logista.html', ['erro_banner' => 'Erro no banco de dados: ' . $e->getMessage()]);
 }
-?>

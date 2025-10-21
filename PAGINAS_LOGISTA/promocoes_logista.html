@@ -57,7 +57,7 @@
             <strong>Cadastrar/Atualizar banner</strong>
           </div>
           <div class="card-body">
-            <form class="row g-3" action="../php/banners.php" method="post"
+            <form class="row g-3" action="../PHP/banners.php" method="post"
               enctype="multipart/form-data">
               <div class="col-12 col-md-4">
                 <label class="form-label">Imagem do banner</label>
@@ -79,9 +79,8 @@
                   </div>
                   <div class="col-md-6">
                     <label class="form-label">Categoria (opcional)</label>
-                    <select class="form-select" name="categoriab"
-                      id="categoriaBanner">
-
+                    <select name="categoriaproduto" id="categoriaBanner" class="form-select">
+                      <option value="0" selected>Selecione uma categoria...</option>
                     </select>
                   </div>
                   <div class="col-md-8">
