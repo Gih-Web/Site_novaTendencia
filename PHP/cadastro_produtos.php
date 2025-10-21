@@ -28,44 +28,8 @@ function read_image_to_blob(?array $file): ?string {
 
 try {
 
-    // ====================================================
-// Somente permite POST
-// ====================================================
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-  redirect_with('../PAGINAS_LOGISTA/cadastro_produtos_logista.html', [
-    'erro_produto' => 'Método inválido'
-  ]);
-}
 
-
-// ====================================================
-// Captura de campos do formulário
-// ====================================================
-$nome        = trim($_POST['nomeproduto'] ?? '');
-$descricao   = trim($_POST['descricao'] ?? '');
-$quantidade  = (int)($_POST['quantidade'] ?? 0);
-$preco       = (float)($_POST['preco'] ?? 0);
-$tamanho     = trim($_POST['tamanho'] ?? '');
-$cor         = trim($_POST['cor'] ?? '');
-$codigo      = (int)($_POST['codigo'] ?? 0);
-$precoPromo  = $_POST['precopromocional'] !== '' ? (float)$_POST['precopromocional'] : null;
-$categoriaId = (int)($_POST['categoriaproduto'] ?? 0);
-$marcaId     = (int)($_POST['marcaproduto'] ?? 0);
-
-// ====================================================
-// Validação básica
-// ====================================================
-if ($nome === '' || $quantidade <= 0 || $preco <= 0 || $codigo <=0 || $marcaId <= 0) {
-  redirect_with('../PAGINAS_LOGISTA/cadastro_produtos_logista.html', [
-    'erro_produto' => 'Preencha todos os campos obrigatórios.'
-  ]);
-}
-  // ====================================================
-  // Inicia transação (garantia de integridade)
-  // ====================================================
-  $pdo->beginTransaction();
-
-    if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["listarProdutos"])) {
+  if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["listarProdutos"])) {
     header('Content-Type: application/json; charset=utf-8');
 
     try {
@@ -124,7 +88,48 @@ if ($nome === '' || $quantidade <= 0 || $preco <= 0 || $codigo <=0 || $marcaId <
     }
 
     exit;
+  }
+
+
+
+    // ====================================================
+// Somente permite POST
+// ====================================================
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+  redirect_with('../PAGINAS_LOGISTA/cadastro_produtos_logista.html', [
+    'erro_produto' => 'Método inválido'
+  ]);
 }
+
+
+// ====================================================
+// Captura de campos do formulário
+// ====================================================
+$nome        = trim($_POST['nomeproduto'] ?? '');
+$descricao   = trim($_POST['descricao'] ?? '');
+$quantidade  = (int)($_POST['quantidade'] ?? 0);
+$preco       = (float)($_POST['preco'] ?? 0);
+$tamanho     = trim($_POST['tamanho'] ?? '');
+$cor         = trim($_POST['cor'] ?? '');
+$codigo      = (int)($_POST['codigo'] ?? 0);
+$precoPromo  = $_POST['precopromocional'] !== '' ? (float)$_POST['precopromocional'] : null;
+$categoriaId = (int)($_POST['categoriaproduto'] ?? 0);
+$marcaId     = (int)($_POST['marcaproduto'] ?? 0);
+
+// ====================================================
+// Validação básica
+// ====================================================
+if ($nome === '' || $quantidade <= 0 || $preco <= 0 || $codigo <=0 || $marcaId <= 0) {
+  redirect_with('../PAGINAS_LOGISTA/cadastro_produtos_logista.html', [
+    'erro_produto' => 'Preencha todos os campos obrigatórios.'
+  ]);
+}
+  // ====================================================
+  // Inicia transação (garantia de integridade)
+  // ====================================================
+  $pdo->beginTransaction();
+
+
 
 
   // ====================================================

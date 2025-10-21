@@ -4,7 +4,7 @@ async function listarProdutos() {
   tabela.innerHTML = ''; // limpa a tabela antes de preencher
 
   try {
-    const response = await fetch('cadatro_produtos.php?listarProdutos=1'); // coloque o caminho do seu PHP
+    const response = await fetch('../PHP/cadastro_produtos.php?listarProdutos=1'); // coloque o caminho do seu PHP
     const data = await response.json();
 
     if (!data.ok) {
