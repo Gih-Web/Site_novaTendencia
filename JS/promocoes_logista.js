@@ -23,29 +23,32 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ================= Função para listar categorias em <select> =================
-  async function listarcategorias(nomeid) {
-  const sel = document.querySelector(nomeid);
-  if (!sel) return;
+function listarcategorias(nomeid) {
+  // Função assíncrona autoexecutável (IIFE) para permitir uso de await
+  (async () => {
+    // Seleciona o elemento HTML informado no parâmetro (ex: um <select>)
+    const sel = document.querySelector(nomeid);
 
-  try {
-    const r = await fetch("../PHP/cadastro_categorias.php?listar=1&format=json");
-    if (!r.ok) throw new Error("Falha ao listar categorias!");
-    const data = await r.json();
+    try {
+      // Faz a requisição ao PHP que retorna a lista de categorias
+      const r = await fetch("../PHP/cadastro_categorias.php?listar=1");
 
-    // Primeira opção fixa
-    sel.innerHTML = '<option value="0" selected>Selecione uma categoria...</option>';
+      // Se o retorno do servidor for inválido (status diferente de 200), lança erro
+      if (!r.ok) throw new Error("Falha ao listar categorias!");
 
-    // Inserindo categorias do banco
-    data.categorias?.forEach(c => {
-      const opt = document.createElement("option");
-      opt.value = c.idCategoria;  // valor real do banco
-      opt.textContent = c.nome;
-      sel.appendChild(opt);
-    });
-  } catch (e) {
-    sel.innerHTML = '<option value="0" disabled>Erro ao carregar</option>';
-  }
+      /*
+        Se os dados vierem corretamente, o conteúdo retornado pelo PHP 
+        (geralmente <option>...</option>) é inserido dentro do elemento HTML.
+        innerHTML é usado para injetar esse conteúdo diretamente no campo.
+      */
+      sel.innerHTML = await r.text();
+    } catch (e) {
+      // Caso haja erro (rede, servidor, etc.), exibe uma mensagem dentro do select
+      sel.innerHTML = "<option disable>Erro ao carregar</option>";
+    }
+  })();
 }
+
 
 
   // ================= Listagem de banners =================

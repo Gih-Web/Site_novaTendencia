@@ -72,7 +72,10 @@ try {
   $dataVal   = trim($_POST['data'] ?? '');
   $link      = trim($_POST['link'] ?? '');
   $categoria = $_POST['categoriab'] ?? null;
-  $categoria = ($categoria === '' || $categoria === null) ? null : (int)$categoria;
+  $categoria = ($categoria === '' || $categoria === '0' || $categoria === null) ? null : (int)$categoria;
+
+
+
 
   $imgBlob   = read_image_to_blob($_FILES['foto'] ?? null);
 
