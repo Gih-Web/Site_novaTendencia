@@ -78,7 +78,7 @@ if (isset($_GET['listarNomes']) && $_GET['listarNomes'] == 1) {
 // =============================================
 try {
   if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    redirect_with('../PAGINAS_LOGISTA/cadastro_marcas_logista.html', [
+    redirect_with('../PAGINAS_LOGISTA/cadastro_produtos_logista.html', [
       'erro_marca' => 'Método inválido'
     ]);
   }
@@ -87,7 +87,7 @@ try {
   $imgBlob = read_image_to_blob($_FILES['imagemmarca'] ?? null);
 
   if ($nome === '') {
-    redirect_with('../PAGINAS_LOGISTA/cadastro_marcas_logista.html', [
+    redirect_with('../PAGINAS_LOGISTA/cadastro_produtos_logista.html', [
       'erro_marca' => 'Preencha o nome da marca.'
     ]);
   }
@@ -99,12 +99,12 @@ try {
   else $st->bindValue(':i', $imgBlob, PDO::PARAM_LOB);
   $st->execute();
 
-  redirect_with('../PAGINAS_LOGISTA/cadastro_marcas_logista.html', [
+  redirect_with('../PAGINAS_LOGISTA/cadastro_produtos_logista.html', [
     'cadastro_marca' => 'ok'
   ]);
 
 } catch (Throwable $e) {
-  redirect_with('../PAGINAS_LOGISTA/cadastro_marcas_logista.html', [
+  redirect_with('../PAGINAS_LOGISTA/cadastro_produtos_logista.html', [
     'erro_marca' => 'Erro no banco de dados: ' . $e->getMessage()
   ]);
 }

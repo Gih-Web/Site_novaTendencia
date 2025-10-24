@@ -57,8 +57,9 @@
             <strong>Cadastrar/Atualizar banner</strong>
           </div>
           <div class="card-body">
-            <form class="row g-3" action="../PHP/banners.php" method="post"
-              enctype="multipart/form-data">
+            <form class="row g-3" action="../PHP/banners.php" method="post"enctype="multipart/form-data">
+              <input type="hidden" name="acao" id="acao" />
+              <input type="hidden" name="id" id="idBanner"/>
               <div class="col-12 col-md-4">
                 <label class="form-label">Imagem do banner</label>
                 <div
@@ -98,8 +99,6 @@
                 <div class="d-flex gap-2 mt-3">
                   <button type="submit"
                     class="btn btn-primary">Cadastrar</button>
-                  <button type="button"
-                    class="btn btn-outline-secondary">Editar</button>
                   <button type="button"
                     class="btn btn-outline-danger">Excluir</button>
                 </div>
