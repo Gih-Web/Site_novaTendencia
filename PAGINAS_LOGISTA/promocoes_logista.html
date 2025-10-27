@@ -11,35 +11,38 @@
       rel="stylesheet" />
     <!-- Estilos da página -->
     <link rel="stylesheet" href="../css/promocoes.css" />
-  </head>
-  <body>
-    <!-- 1) Menu de navegação -->
-    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
-      <div class="container">
-        <a class="navbar-brand fw-bold" href="#">PetAmigo</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-          data-bs-target="#topNav" aria-controls="topNav" aria-expanded="false"
-          aria-label="Alternar navegação">
-          <span class="navbar-toggler-icon"></span>
-        </button>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
 
-        <div class="collapse navbar-collapse" id="topNav">
-          <ul class="navbar-nav ms-auto mb-2 mb-lg-0 gap-lg-2">
-            <li class="nav-item"><a class="nav-link "
-                href="home_lojista.html">Relatórios</a></li>
-            <li class="nav-item"><a class="nav-link"
-                href="cadastro_produtos_logista.html">Produtos</a></li>
-            <li class="nav-item"><a class="nav-link active"
-                href="promocoes_logista.html">Promoções</a></li>
-            <li class="nav-item"><a class="nav-link  "
-                href="frete_pagamento_logista.html">Pagamentos e Fretes</a></li>
-            <li class="nav-item"><a class="nav-link "
-                href="chat_logista.html">Conversas</a></li>
-
-          </ul>
-        </div>
-      </div>
-    </nav>
+<header class="header">
+  <div class="logo">
+    <a href="/index.html"><img src="../IMG/Logo1.png" alt="Logo da Loja Nova Tendência"/></a>
+  </div>
+  <div class="search-box">
+    <input type="text" class="pesquisar form-control" placeholder="Pesquisar">
+  </div>
+  <div class="menu-toggle" id="menu-toggle">☰</div>
+  <div class="icons" id="icons">
+    <img src="../IMG/ajuda-chat.png" alt="Chat">
+    <div class="cart-wrapper" style="position: relative; display: inline-block;">
+      <img src="../IMG/sacola.png" id="cart-icon" alt="Carrinho">
+      <span id="cart-count" style="
+          position: absolute;
+          top: -8px;
+          right: -8px;
+          background: red;
+          color: white;
+          font-size: 12px;
+          font-weight: bold;
+          padding: 2px 6px;
+          border-radius: 50%;
+          display: none;
+      ">0</span>
+    </div>
+    <a href="/PAGINAS/login.html"><img src="../IMG/usuario.png" alt="Perfil"></a>
+  </div>
+</header>
 
     <main class="container my-4">
 
@@ -97,10 +100,9 @@
                 </div>
 
                 <div class="d-flex gap-2 mt-3">
-                  <button type="submit"
-                    class="btn btn-primary">Cadastrar</button>
+                  <button type="submit" class="btn btn-primary" id="btnCadastrar">Cadastrar</button>
                   <button type="button"
-                    class="btn btn-outline-danger">Excluir</button>
+                    class="btn btn-outline-danger" id="btnExcluir">Excluir</button>
                 </div>
               </div>
             </form>
