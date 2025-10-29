@@ -58,10 +58,7 @@ try {
         redirectWith("../PAGINAS/cadastro.html", ["erro" => "CPF já cadastrado."]);
     }
 
-    // Criptografar a senha
-    $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
-
-    // Inserção no banco
+    // Inserção no banco (senha em texto puro)
     $sql = "INSERT INTO Cliente (nome, cpf, telefone, email, senha)
             VALUES (:nome, :cpf, :telefone, :email, :senha)";
     $stmt = $pdo->prepare($sql);
@@ -70,11 +67,11 @@ try {
         ":cpf" => $cpf,
         ":telefone" => $telefone,
         ":email" => $email,
-        ":senha" => $senhaHash
+        ":senha" => $senha // sem hash
     ]);
 
     if ($inserir) {
-        redirectWith("../PAGINAS/login.html", ["cadastro" => "ok"]);
+        redirectWith("../PAGINAS_CLIENTE/login.html", ["cadastro" => "ok"]);
     } else {
         redirectWith("../PAGINAS/cadastro.html", ["erro" => "Erro ao cadastrar no banco de dados."]);
     }

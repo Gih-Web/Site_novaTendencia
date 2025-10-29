@@ -1,5 +1,7 @@
+drop DATABASE novatendencia; 
+
  CREATE DATABASE novatendencia; 
- DROP DATABASE novatendencia;
+
  USE novatendencia;
 
 -- Criar Tabelas
@@ -44,7 +46,7 @@ desconto DOUBLE
 
 
 CREATE TABLE BANNERS(
-idBannres INT PRIMARY KEY AUTO_INCREMENT,
+idBanners INT PRIMARY KEY AUTO_INCREMENT,
 imagem LONGBLOB NOT NULL,
 data_validade DATE NOT NULL,
 descricao VARCHAR(45) NOT NULL,
@@ -53,6 +55,8 @@ categoria_id INT,
 CONSTRAINT FOREIGN KEY (categoria_id) REFERENCES
 CATEGORIA (idCategoria)
 );
+
+ 
 
 CREATE TABLE CUPOM (
 idCupom INT PRIMARY KEY AUTO_INCREMENT,
@@ -294,4 +298,4 @@ ALTER TABLE FORMA_PAGAMENTO DROP COLUMN cupom_id;
 select * from forma_pagamento;
 select * from frete; 
 
-select * from cliente_id
+select * from client;

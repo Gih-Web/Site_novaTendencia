@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nova Tendência</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <div class="logo">
+    <img src="../IMG/Logo1.png" alt="Logo da Loja Nova Tendência"/>
+  </div>
+
+  <div class="search-box">
+    <input type="text" class="pesquisar form-control" placeholder="Pesquisar">
+  </div>
+
+  <div class="menu-toggle" id="menu-toggle">☰</div>
+
+  <div class="icons" id="icons">
+    <img src="../IMG/ajuda-chat.png" alt="Chat">
+    <div class="cart-wrapper" style="position: relative; display: inline-block;">
+      <a href="/PAGINAS/carrinho.html"><img src="../IMG/sacola.png" id="cart-icon" alt="Carrinho"></a>
+      <span id="cart-count" style="
+          position: absolute;
+          top: -8px;
+          right: -8px;
+          background: red;
+          color: white;
+          font-size: 12px;
+          font-weight: bold;
+          padding: 2px 6px;
+          border-radius: 50%;
+          display: none;
+      ">0</span>
+    </div>
+    <a href="/PAGINAS/login.html"><img src="../IMG/usuario.png" alt="Perfil"></a>
+  </div>
+
+</header>
+
+<main class="container-fluid p-0">
+
+ <!-- CARROSSEL DE BANNERS -->
+    <div id="carouselBanners" class="carousel slide carousel-fade" data-bs-ride="carousel">
+      <div class="carousel-indicators" id="banners-indicators"></div>
+      <div class="carousel-inner" id="banners-home">
+        <!-- Itens serão inseridos via JS -->
+        <div class="carousel-item active">
+          <div class="p-3 text-muted">Carregando banners…</div>
+        </div>
+      </div>
+
+      <button class="carousel-control-prev" type="button"
+              data-bs-target="#carouselBanners" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Anterior</span>
+      </button>
+
+      <button class="carousel-control-next" type="button"
+              data-bs-target="#carouselBanners" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Próximo</span>
+      </button>
+    </div>
+
+  <!-- Categorias -->
+  <section class="container my-5">
+    <h2 class="text-center text-warning mb-4">Categorias</h2>
+    <div class="row text-center justify-content-center">
+      <div class="col-6 col-md-3 mb-4">
+        <img src="/IMG/blusa.png" class="rounded-circle img-fluid mb-2" alt="Blusas">
+        <p class="fw-bold">BLUSAS</p>
+      </div>
+      <div class="col-6 col-md-3 mb-4">
+        <img src="/IMG/calca.png" class="rounded-circle img-fluid mb-2" alt="Calças">
+        <p class="fw-bold">CALÇAS</p>
+      </div>
+      <div class="col-6 col-md-3 mb-4">
+        <img src="/IMG/vestido.png" class="rounded-circle img-fluid mb-2" alt="Vestidos">
+        <p class="fw-bold">VESTIDOS</p>
+      </div>
+      <div class="col-6 col-md-3 mb-4">
+        <img src="/IMG/short.png" class="rounded-circle img-fluid mb-2" alt="Shorts">
+        <p class="fw-bold">SHORTS</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Produtos em Alta -->
+  <!-- ===========================
+    3) PRODUTOS EM ALTA
+    =========================== -->
+<section class="container my-5">
+    
+    <!-- Título da seção -->
+    <h2 class="text-start text-warning mb-4">Em Alta</h2>
+    
+    <!-- Grid de produtos: col-6 (celular) / col-md-3 (desktop) -->
+    <div class="row g-4">
+
+      <!-- Produto 1 -->
+      <div class="col-6 col-md-3">
+        <div class="card h-100  position-relative">
+          <img src="/IMG/produtos/produto1.png" class="card-img-top" alt="Produto 1">
+          <!-- Botão Curtir -->
+          <button class="like-btn"><i class="bi bi-heart"></i></button>
+          <div class="card-body">
+            <p class="small">Conjunto Social Branco – Cropped + Calça Alfaiataria</p>
+            <div class="card_data">
+              <p class="card-text small text-muted"><s>R$ 105,90</s></p>
+              <h6 class="fw-bold ">R$ 89,90</h6>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Produto 2 -->
+      <div class="col-6 col-md-3">
+        <div class="card h-100  position-relative">
+          <img src="/IMG/produtos/produto2.png" class="card-img-top" alt="Produto 1">
+          <!-- Botão Curtir -->
+          <button class="like-btn"><i class="bi bi-heart"></i></button>
+          <div class="card-body">
+            <p class="small">Conjunto Verde Menta – Colete Alfaiataria + Calça</p>
+            <div class="card_data">
+              <h6 class="fw-bold ">R$ 89,90</h6>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Produto 3 -->
+      <div class="col-6 col-md-3">
+        <div class="card h-100  position-relative">
+          <img src="/IMG/produtos/produto3.png" class="card-img-top" alt="Produto 1">
+          <!-- Botão Curtir -->
+          <button class="like-btn"><i class="bi bi-heart"></i></button>
+          <div class="card-body">
+            <p class="small">Vestido Azul Alfaiataria</p>
+            <div class="card_data">
+              <h6 class="fw-bold ">R$ 89,90</h6>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Produto 4 -->
+      <div class="col-6 col-md-3">
+        <div class="card h-100  position-relative">
+          <img src="/IMG/produtos/produto4.png" class="card-img-top" alt="Produto 1">
+          <!-- Botão Curtir -->
+          <button class="like-btn"><i class="bi bi-heart"></i></button>
+          <div class="card-body">
+            <p class="small">Conjunto Social Branco – Cropped + Calça Alfaiataria</p>
+            <div class="card_data">
+              <p class="card-text small text-muted"><s>R$ 105,90</s></p>
+              <h6 class="fw-bold text-danger">R$ 89,90</h6>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="col-6 col-md-3">
+        <a href="/PAGINAS/detalhesprodutos.html" class="card-link">
+          <div class="card h-100  position-relative">
+            <img src="/IMG/vestidos/vestido.verde.png" class="card-img-top" alt="Produto 1">
+            <!-- Botão Curtir -->
+            <button class="like-btn"><i class="bi bi-heart"></i></button>
+
+            <div class="card-body">
+              <p class="small">Vestido Longo com Fenda Lateral e Babado no Decote</p>
+              <div class="card_data">
+                <p class="card-text small text-muted"><s>R$ 105,90</s></p>
+                <h6 class="fw-bold text-danger">R$ 89,90</h6>
+              </div>
+            </div>
+
+          </a>
+        </div>
+      </div>
+
+
+
+
+    </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="footer-esquerdo">
+    <a href="#"><p>Sobre nós</p></a>
+    <a href="#"><p>Novidades</p></a>
+    <p>Desenvolvido por Giovanna Evellyn Santos Silva</p>
+  </div>
+  <div class="footer-direito">
+    <p>Conheça nossas redes sociais</p>
+    <div class="icons-sociais">
+      <a href="#"><img src="../IMG/instagram.png" alt="Instagram"></a>
+      <a href="#"><img src="../IMG/facebook.png" alt="Facebook"></a>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="/JS/home_cliente.js"></script>
+</body>
+</html>

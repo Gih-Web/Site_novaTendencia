@@ -1,0 +1,316 @@
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #fff;
+}
+
+
+.header {
+  background-color: #1F1F1F; 
+  padding: 20px;
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: bold;
+  height: 80px;
+  width: auto;
+}
+.logo img { 
+  display: flex;
+  height: 75px;
+  width: 90px;
+  margin-left: 50px;
+  cursor: pointer;
+}
+
+/* barra de pesquisa */
+.search-box {
+  flex: 1;
+  max-width: 800px;
+  margin: 0 20px;
+  border: none;
+  border-radius: 100px;
+  font-size: 16px;
+}
+.search-box input {
+  width: 100%;
+  padding: 10px 30px 10px 15px;
+  border: none;
+  border-radius: 5px;
+  font-size: 15px;
+  outline: none;
+}
+
+/* Ícones */
+.icons {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+  margin-right: 60px;
+}
+.icons img {
+  display: flex;
+  height: 29px;
+  margin-left: 15px;
+  cursor: pointer;
+}
+
+.icons img {
+    transition: transform 0.3s ease, filter 0.3s ease;
+    filter: brightness(1.3);
+}
+
+.icons img:hover {
+    transform: scale(1.2);       /* aumenta o ícone */
+    filter: brightness(1.3);     /* deixa o ícone mais claro */
+}
+
+/* Ícones das redes sociais do footer */
+.icons-sociais img {
+    transition: transform 0.3s ease, filter 0.3s ease;
+    filter: brightness(1.3);
+}
+
+.icons-sociais img:hover {
+    transform: scale(1.2);       /* aumenta o ícone */
+    filter: brightness(1.3);     /* deixa o ícone mais claro */
+}
+
+.logo img {
+    transition: transform 0.3s ease; /* animação suave */
+}
+
+.logo img:hover {
+    transform: scale(1.05);  /* aumenta levemente a logo */
+    cursor: pointer;         /* muda o cursor para indicar clicável */
+}
+
+
+/* botão hamburguer */
+.menu-toggle {
+  display: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .icons {
+    display: none;
+    flex-direction: column;
+    background: #1f1f1f;
+    position: absolute;
+    top: 60px;
+    right: 20px;
+    padding: 10px;
+    border-radius: 6px;
+    z-index: 9999;
+  }
+  .icons img {
+    margin: 10px 0;
+  }
+  .menu-toggle {
+    display: block;
+  }
+}
+
+
+.nova-tendencia{
+    text-align: center;
+    color: white;
+    z-index: 99;
+    font-style: italic;
+}
+
+/*.icons:hover {
+    background-color: rgb(49, 49, 49);
+}*/
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #e7e7e7; /* cor final */
+  color: #1F1F1F;
+  padding: 20px 40px;
+  flex-wrap: wrap;
+  width: 100%;
+  /* REMOVIDO: position: fixed; bottom: 0; left: 0; */
+}
+
+.footer-esquerdo p,
+.footer-esquerdo a {
+  display: flex;
+  margin: 5px 0;
+  color: #1F1F1F;
+  text-decoration: none;
+  font-size: 14px;
+  flex-direction: column;
+  gap: 5px;
+}
+.footer-esquerdo a:hover { text-decoration: underline; }
+
+.footer-direito { text-align: right; }
+
+.icons-sociais a { margin-left: 10px; }
+.icons-sociais img {
+  width: 30px;
+  height: 30px;
+  transition: transform 0.3s ease;
+}
+.icons-sociais img:hover { transform: scale(1.2); }
+/*Inicio do Estilo da Tela de Cadastro--------------------------------*/
+
+
+.bg-image {
+  background: url('../IMG/bg-cadastro.jpg') no-repeat center center;
+  background-size: cover;
+  position: relative;
+}
+
+.bg-image::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6); /* efeito de overlay escuro */
+}
+
+.bg-image .text-center {
+  position: relative;
+  z-index: 2;
+}
+
+
+.logo {
+  max-width: 120px;
+  align-items: center;
+}
+
+input.form-control {
+  border-radius: 10px;
+  padding: 10px;
+}
+
+button.btn-dark {
+  border-radius: 10px;
+  padding: 12px;
+  font-weight: bold;
+}
+
+button.toggle-password {
+  border-radius: 0 10px 10px 0;
+}
+
+@media (max-width: 991px) {
+  .bg-image {
+    display: none;
+  }
+}
+/*Fim do Estilo da Tela de Cadastro----------------------------------*/
+
+/*Inicio da Imagem de Fundo com Overlay-----------------------------*/
+.bg-image {
+  background: url('../IMG/foto.init.png') no-repeat center center;
+  background-size: cover;
+  position: relative;
+  min-height: 100vh;
+ 
+}
+
+.bg-image::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6); /* deixa a imagem escura */
+  z-index: 1;
+}
+
+.overlay-content {
+  position: relative;
+  z-index: 2; /* fica acima do overlay escuro */
+}
+
+.logo {
+  max-width: 150px;
+}
+/*Fim da Imagem de Fundo com Overlay-------------------------------*/
+
+/*area de login*/
+.login-card{
+  background-color: white;
+  border: 1px;
+
+}
+
+
+#login-bemvindo {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+      rgba(0, 0, 0, 0.6),   /* camada preta com 60% de opacidade */
+      rgba(0, 0, 0, 0.6)
+    ),
+    url("../IMG/foto.init.png") center/cover no-repeat;
+}
+
+.sem-conta{
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 15px;
+  font-weight: bold;
+  margin-top: 20px;
+  margin-bottom: 5px;
+
+}
+
+.cadastro-btn {
+  display: block; 
+  width: 100%; /* ocupa toda a largura disponível */
+  max-width: 400px; /* nunca passa de 400px */
+  margin: 0 auto; /* centraliza */
+  height: 45px;
+  background-color: transparent; 
+  color: black; 
+  border: 1px solid black; 
+  border-radius: 0.600rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: center;
+  cursor: pointer;
+}
+
+.cadastro-btn:hover {
+  background-color: #eeeeee; /* cinza escuro */
+  color: rgb(41, 41, 41);
+}
+
+.tela-cadastro{
+  text-decoration: none;
+}
+
+.breadcrumb a {
+  color: #fff;
+  text-decoration: none;
+  margin: 0 5px;
+}
+
+.breadcrumb a:hover {
+  text-decoration: underline;
+}
+
+.image-voltar{
+  margin-right: 20px;
+  margin-left: 20px;
+}
+
+.esqueci-senha{
+  cursor: pointer;
+  color: rgb(0, 149, 218);
+}
+

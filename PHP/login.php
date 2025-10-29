@@ -13,13 +13,12 @@ function redirectWith($url, $params = []) {
 }
 
 try {
-    // só permite POST
     if ($_SERVER["REQUEST_METHOD"] !== "POST") {
         redirectWith("../PAGINAS/login.html", ["erro" => "Método inválido"]);
     }
 
-    // captura os dados do formulário
-    $email = $_POST["email"] ?? "";
+    // CAPTURA OS CAMPOS DO FORMULÁRIO
+    $email = trim($_POST["email"] ?? "");
     $senha = $_POST["senha"] ?? "";
 
     // validação básica
@@ -31,8 +30,8 @@ try {
         redirectWith("../PAGINAS/login.html", ["erro" => "E-mail inválido"]);
     }
 
-    // verifica se o email existe no banco
-    $stmt = $pdo->prepare("SELECT * FROM Cliente WHERE email = :email LIMIT 1");
+    // BUSCA NO BANCO PELO EMAIL
+    $stmt = $pdo->prepare("SELECT * FROM CLIENTE WHERE email = :email LIMIT 1");
     $stmt->execute([":email" => $email]);
     $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -40,18 +39,17 @@ try {
         redirectWith("../PAGINAS/login.html", ["erro" => "E-mail não encontrado"]);
     }
 
-    // compara senha (⚠️ ainda em texto puro, não seguro)
+    // COMPARA SENHA (ainda texto puro)
     if ($usuario["senha"] !== $senha) {
         redirectWith("../PAGINAS/login.html", ["erro" => "Senha incorreta"]);
     }
 
-    // login bem-sucedido → cria sessão
+    // LOGIN BEM-SUCEDIDO → CRIA SESSÃO
     session_start();
-    $_SESSION["usuario_id"] = $usuario["id"];   // supondo que sua tabela tenha "id"
+    $_SESSION["usuario_id"] = $usuario["idCliente"];
     $_SESSION["usuario_nome"] = $usuario["nome"];
 
-    // redireciona para a index
-    redirectWith("../PAGINAS/index.html", ["login" => "ok"]);
+    redirectWith("../index.html", ["login" => "ok"]);
 
 } catch (PDOException $e) {
     redirectWith("../PAGINAS/login.html", ["erro" => "Erro no banco de dados: " . $e->getMessage()]);
