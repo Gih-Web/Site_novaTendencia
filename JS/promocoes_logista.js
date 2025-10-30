@@ -286,5 +286,5 @@ document.addEventListener('DOMContentLoaded', () => {
   listarcategorias("#categoriaBanner");
 
   listarCupons("tabelaCupons");
-  listarcategorias("#categoriasPromocoes");
+  listarcategorias("categoriasPromocoes");
 

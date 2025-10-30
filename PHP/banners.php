@@ -149,8 +149,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['listar'])) {
       ];
     }, $rows);
 
-    echo json_encode(['ok' => true, 'count' => count($banners), 'banners' => $banners], JSON_UNESCAPED_UNICODE);
-    exit;
+    header('Content-Type: application/json; charset=utf-8');
+echo json_encode(['ok' => true, 'count' => count($banners), 'banners' => $banners], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+exit;
 
   } catch (Throwable $e) {
     http_response_code(500);

@@ -34,7 +34,7 @@ try {
 
         // Validação mínima
         if ($descricao === "" || $link === "" || !$img) {
-            redirecWith("../paginas_logista/banners.html", ["erro" => "Preencha todos os campos e selecione uma imagem."]);
+            redirecWith("../paginas_logista/promocoes_logista.html", ["erro" => "Preencha todos os campos e selecione uma imagem."]);
         }
 
         if ($id) {
@@ -62,7 +62,7 @@ try {
             ]);
         }
 
-        redirecWith("../paginas_logista/banners.html", ["ok"=>1]);
+        redirecWith("../paginas_logista/promocoes_logista.html", ["ok"=>1]);
     } elseif ($method === "GET" && isset($_GET["listar"])) {
         // Listagem para JS
         $stmt = $pdo->query("SELECT b.id, b.descricao, b.link, b.validade, b.categoria_id, c.nome as categoria_nome FROM banners b LEFT JOIN categorias c ON b.categoria_id = c.id ORDER BY b.id DESC");

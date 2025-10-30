@@ -1,35 +1,48 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const form  = document.querySelector('form'); // seu form-login
+  const form = document.getElementById('form-login');
+  if (!form) return;
+
   const emailEl = document.getElementById('email');
   const senhaEl = document.getElementById('senha');
 
   const showMsg = (msg) => {
-    alert(msg); // mantém alert como no seu código
+    alert(msg); // pode trocar por toast Bootstrap se quiser
   };
 
-  form.addEventListener('submit', (e) => {
-    // valida campos antes de enviar
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
     const email = (emailEl.value || '').trim();
     const senha = (senhaEl.value || '').trim();
 
     if (!email || !senha) {
-      e.preventDefault();
-      showMsg('Preencha todos os campos.');
+      showMsg('Preencha e-mail e senha.');
       return;
     }
 
-    // valida e-mail
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      e.preventDefault();
-      showMsg('E-mail inválido.');
-      return;
-    }
+    try {
+      const resp = await fetch('../PHP/login.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, senha })
+      });
 
-    // se passou, deixa o form submeter normalmente para o PHP
+      const data = await resp.json();
+
+      if (data.ok) {
+        showMsg('Login realizado com sucesso!');
+        setTimeout(() => {
+          window.location.href = data.redirect;
+        }, 800);
+      } else {
+        showMsg(data.msg || 'Credenciais inválidas.');
+      }
+    } catch (err) {
+      console.error(err);
+      showMsg('Erro de conexão com o servidor.');
+    }
   });
 
-  // Toggle senha
   document.querySelectorAll('.toggle-password').forEach(btn => {
     btn.addEventListener('click', () => {
       const target = document.getElementById(btn.dataset.target);
@@ -37,7 +50,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // mostra mensagens vindas da URL
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get("cadastro") === "ok") {
     showMsg("Cadastro realizado com sucesso! Faça login.");
